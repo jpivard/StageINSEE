@@ -166,6 +166,36 @@ ggplot(data = df5) + aes (x=period, y=production_totale_energie_all, col = perio
 # Pour l'Allemagne, c'est l'inverse : on observe une baisse assez régulière depuis 1990, pour atteindre actuellement une production d'un niveau comparable à celui de la France.
 
 
+#Grouper les deux derniers tableaux pour pouvoir tout voir sur le même graphique
+
+df_fr_all <- bind_cols(df4, df5)
+
+class(as.data.frame(df_fr_all))
+
+df_fr_all <- df_fr_all[,-3]
+
+colnames(df_fr_all)[1] <- 'annee'
+colnames(df_fr_all)[2] <- 'production_totale_energie_fr'
+colnames(df_fr_all)[3] <- 'production_totale_energie_all'
+
+plot1 <- ggplot(data=df_fr_all) + theme_classic()+ annotate("France",x=annee, y=production_totale_energie_fr, label="classic()", col="blue")
+plot2 <- ggplot(data=df_fr_all) + theme_classic()+ annotate("Allemagne",x=annee, y=production_totale_energie_all, label="classic()", col="red")
+#Ne fonctionne pas
+
+ggplot(data = df_fr_all) + aes (x=annee, y1=production_totale_energie_fr, y2= production_totale_energie_all ,col = annee) + geom_point()
+#Non plus
+
+
+#Autre piste : http://www.sthda.com/french/wiki/ggplot2-combiner-plusieurs-graphiques-sur-la-m-me-page-logiciel-r-et-visualisation-de-donn-es
+install.packages("gridExtra")
+library("gridExtra")
+
+install.packages("cowplot")
+library("cowplot")
+
+#Je pense que ça ne fonctionnera pas car le tableau de données n'est pas au même format
+
+
 
 
 
