@@ -84,10 +84,6 @@ df2= read_csv(file ='Conso_electricite_fr.csv')
 
 class(as.data.frame(df2))#On a transformé le tibble en data frame
 
-#rename(df2, consommation_electricite_fr = 'Electric power consumption (kWh per capita) – France (WB/WDI/EG.USE.ELEC.KH.PC-FR)')
-#names(df2)
-#dput(names(df2))
-
 colnames(df2)[2] <- 'consommation_electricite_fr'
 
 df2 <- df2[-56,]
@@ -110,7 +106,7 @@ df4 <- rdb("EIA", "INTL", dimensions = list(country = c("FR"), indicator = c("44
 df_dimensions <- rdb_dimensions(provider_code = "EIA", dataset_code = "INTL")   #Methode pour voir les dimensions
 df4 <- rdb("EIA", "INTL", dimensions = list(frequency = c('A'),geography = c("fra"), units = c("tril")))
 
-#Ca fonctionne sauf que les vaelurs ne correspodent pas du tout à celles que l'on voit sur le site !
+#Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
 
 #On reprend donc l'autre méthode d'importation
 df4 = read_csv(file='Production_energie_fr.csv')
@@ -193,7 +189,32 @@ library("gridExtra")
 install.packages("cowplot")
 library("cowplot")
 
-#Je pense que ça ne fonctionnera pas car le tableau de données n'est pas au même format
+df_fr_all <- df_fr_all %>% filter(!is.na(production_totale_energie_all))
+#On supprime toutes les lignes où on a des valeurs manquantes
+
+ "x <-c(production_totale_energie_fr)
+y <-production_totale_energie_all
+boxplot(x,y,col=couleurs)"
+
+#On essaie de regrouper les deux dernières colonnes en une seule et de dupliquer la première.
+
+colonnes <- c("production_totale_energie_fr", "production_totale_energie_all")
+df_fr_all <- df_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") %>%
+
+ggplot(df_fr_all, aes(x=annee, y=value, color=production_energie)) +
+  geom_boxplot() + 
+  theme(legend.position = "none")
+#On a les deux boxplots sur le même graphique.
+
+
+ggplot(data = df_fr_all ) + aes (x=annee, y = value , col = production_energie) + geom_line() 
+#On a l'évolution comparée de la production d'énergie en Allemagne et en France : les deux tendances sont clairement inversées,
+#la France a dépassé l'Allemagne aux alentours de 2008.
+
+
+
+
+
 
 
 
