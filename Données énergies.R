@@ -196,6 +196,7 @@ df_fr_all <- df_fr_all %>% filter(!is.na(production_totale_energie_all))
 y <-production_totale_energie_all
 boxplot(x,y,col=couleurs)"
 
+
 #On essaie de regrouper les deux dernières colonnes en une seule et de dupliquer la première.
 
 colonnes <- c("production_totale_energie_fr", "production_totale_energie_all")
