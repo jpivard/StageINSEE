@@ -105,12 +105,12 @@ hist(df2$consommation_electricite_fr, col="blue", main="Consommation d'électric
 #II.Production d'énergie en France ( en millions de tonnes métriques d'équivalent pétrole ) et comparaison avec l'Allemagne
 
 
-df4 <- rdb("EIA", "INTL", dimensions = list(country = c("FR"), indicator = c("44-1-FRA-MTOE.A")))
-
-df_dimensions <- rdb_dimensions(provider_code = "EIA", dataset_code = "INTL")   #Methode pour voir les dimensions
-df4 <- rdb("EIA", "INTL", dimensions = list(frequency = c('A'),geography = c("fra"), units = c("tril")))
-
-#Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
+# df4 <- rdb("EIA", "INTL", dimensions = list(country = c("FR"), indicator = c("44-1-FRA-MTOE.A")))
+# 
+# df_dimensions <- rdb_dimensions(provider_code = "EIA", dataset_code = "INTL")   #Methode pour voir les dimensions
+# df4 <- rdb("EIA", "INTL", dimensions = list(frequency = c('A'),geography = c("fra"), units = c("tril")))
+# 
+# #Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
 
 #On reprend donc l'autre méthode d'importation
 df4 = read_csv(file='~/données/Production_energie_fr.csv')
@@ -210,7 +210,7 @@ boxplot(x,y,col=couleurs)"
 colonnes <- c("production_totale_energie_fr", "production_totale_energie_all")
 df_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") %>%
 
-ggplot( aes(x=annee, y=value, color=production_energie)) +
+ggplot( aes(y=value, color=production_energie)) +
   geom_boxplot() + 
   theme(legend.position = "none") -> graph1
 
