@@ -105,20 +105,28 @@ ggplot(data = df_5) + aes (x=annee, y=consommation_finale_energies_renouvelables
 
 #Essayer de tout visualiser sur un seul graphique
 
+colnames(df_1)[2] <- 'France'
+colnames(df_5)[2] <- 'Allemagne'
+colnames(df_4)[2] <- 'UE'
+
 df_6 <- df_1 %>% left_join(df_5, by ="annee", copy=FALSE) %>% left_join(df_4, by ="annee", copy=FALSE)
 
-col_2 <- c("consommation_finale_energies_renouvelables_fr", "consommation_finale_energies_renouvelables_All","consommation_finale_energies_renouvelables_UE")
+col_2 <- c("France", "Allemagne","UE")
 df_6_long <- df_6 %>% pivot_longer(col_2, names_to = "consommation_finale_energies_renouvelables", values_to = "value") 
 
 graph5 <- ggplot(df_6_long, aes(x=consommation_finale_energies_renouvelables,y=value, color=consommation_finale_energies_renouvelables)) +
-  geom_boxplot() 
-#La distribution des valeurs est beaucoup plus étalée pour l'Allemagne (en rouge) que pour la France (en vert)
+  scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
+  geom_boxplot()+
+  labs(title="Distributions de la consommation \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Pays", y="Valeur(en TEP)")+
+  theme(legend.position = "none",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+#La distribution des valeurs est beaucoup plus étalée pour l'Allemagne  que pour la France 
 
 
 graph6 <- ggplot(data = df_6_long ) + aes (x=annee, y = value , col =consommation_finale_energies_renouvelables) + geom_line() +
   scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
-  labs(title="Evolution comparée de la consommation \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Année", y="Valeur")+
-  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+  labs(title="Evolution comparée de la consommation \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Année", y="Valeur(en TEP)")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
+  labs(color = "Pays")
 #On remarque que la tendance allemande est plus proche de la tendance européenne que ne l'est la France, qui stagne un peu.
 #L'Allemagne a d'ailleurs dépassé la France sur les dernières années alors qu'elle démarrait de beaucoup plus bas.
 
@@ -130,26 +138,25 @@ graph6 <- ggplot(data = df_6_long ) + aes (x=annee, y = value , col =consommatio
 df_7 =read.csv(file='~/données/Production_primaire_energies_renouvelables.csv')
 
 colnames(df_7)[1] <- 'annee'
-colnames(df_7)[2] <- 'production_primaire_energies_renouvelables_France'
-colnames(df_7)[3] <- 'production_primaire_energies_renouvelables_UE'
-colnames(df_7)[4] <- 'production_primaire_energies_renouvelables_Allemagne'
+colnames(df_7)[2] <- 'France'
+colnames(df_7)[4] <- 'Allemagne'
+colnames(df_7)[3] <- 'UE' 
 
-colonnes_2<- c("production_primaire_energies_renouvelables_France", "production_primaire_energies_renouvelables_UE","production_primaire_energies_renouvelables_Allemagne") 
+colonnes_2<- c("France", "UE","Allemagne") 
 df_7_long <- df_7 %>% pivot_longer(colonnes_2, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
 
-ggplot(data = df_7  ) + aes (y=production_primaire_energies_renouvelables_France ) + geom_boxplot()
-ggplot(data = df_7  ) + aes (y=production_primaire_energies_renouvelables_Allemagne ) + geom_boxplot()
-
-#Sur un même graphique
 graph7 <- ggplot(df_7_long, aes(x=production_primaire_energies_renouvelables,y=value, color=production_primaire_energies_renouvelables)) +
-  geom_boxplot() 
+  scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
+  labs(title="Distributions de la production primaire \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Pays", y="Valeur(en TEP)")+
+  geom_boxplot()+
+  theme(legend.position = "none",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
   
 
 # La distribution des valeurs pour la France est beaucoup plus étalée : de moins de 10000 TEP à près de 40000, alors que pour l'Allemagne elle est très resserrée (entre 15000 et 22500, à deux exceptions près)
 
-ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_France ) + geom_line()
-ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_Allemagne ) + geom_line()
-ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_UE) + geom_line()
+# ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_France ) + geom_line()
+# ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_Allemagne ) + geom_line()
+# ggplot(data = df_6  ) + aes (x=annee, y=production_primaire_energies_renouvelables_UE) + geom_line()
 
 #Sur un même graphique
 
@@ -157,9 +164,18 @@ graph8 <- ggplot(data = df_7_long ) + aes (x=annee, y = value , col =production_
   scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
   labs(title="Evolution comparée de la production primaire \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Année", y="Valeur(en tonnes d'équivalent pétrole)")+
   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
-  labs(color = "Production primaire d'énergies renouvables")
+  labs(color = "Pays")
 
-#Progression continue et rapide en France et dans l'UE, progression plus tardive et plus lente en Allemagne
+#Progression continue et rapide en France et dans l'UE, progression plus tardive et plus lente en Allemagne, dépassée par la France au milieu des années 2000.
+#On a donc une situation différente (presque symétriquement opposée)à celle de la consommation.
+
+
+
+
+
+#Autres pistes:
+#Parts des ER dans la conso et la prod d'énergie primaire
+#Utiliser la package Zoo pour traiter en séries temporelles
 
 
 

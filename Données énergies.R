@@ -14,7 +14,6 @@ library(dplyr)
 
 #df3 <- rdb("WB", "WDI", dimensions = list(country = c("FR", "GA"), indicator = c("EG.USE.ELEC.KH.PC")))
 
-library(dplyr)
 
 # conso_electricite <- df3 %>% select(country, original_period, value) %>%
 #                     rename(annee = original_period) %>%
@@ -226,6 +225,13 @@ ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production
   
 #On a l'évolution comparée de la production d'énergie en Allemagne et en France : les deux tendances sont clairement inversées,
 #la France a dépassé l'Allemagne aux alentours de 2008.
+
+
+
+
+#Autres pistes:
+#1)Parts des différentes sources d'énergie dans la consommation et dans la production primaires
+#2)Intensité en consommation primaire de pétrole du PIB 
 
 
 
