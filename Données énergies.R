@@ -4,11 +4,13 @@ install.packages('rdbnomics')
 install.packages("dplyr")
 install.packages("readr")
 
+
 library(rdbnomics)
 library(readr)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
+
 
 #I. Consommation d'électricité
 
@@ -229,13 +231,257 @@ ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production
 
 
 
-#Autres pistes:
-#1)Parts des différentes sources d'énergie dans la consommation et dans la production primaires
-#2)Intensité en consommation primaire de pétrole du PIB 
+
+
+#III.Répartitions des différentes sources d'énergie dans la consommation et dans la production primaires en France
+
+
+df7 <- read_tsv(file="données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+
+df8 <- read_tsv(file = "données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+
+
+#Utilisons le package Zoo pour traiter les données en séries temporelles
+
+install.packages("zoo")
+library(zoo)
+
+
+z1.index <- df7$Annee 
+z1.data <- df7[,-1]
+
+z1 <- zoo(z1.data,order.by = z1.index)
+
+#z1$Nuclear
+
+z4.index <- df8$X1
+z4.data <- df8 [,-1]
+
+z4 <- zoo(z4.data, order.by=z4.index)
+
+
+#On remarque que les énergies renouvelables représentent une proportion très faible du mix énergétique (à part l'hydroélectricité)
+
+
+#1. Consommation
+
+#Evolution comparée des consommations primaires en pétrole,et nucléaire
+#Puis charbon et nucléaire
+#Ainsi que gaz et nucléaire
+
+graph13a <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des consommations primaires \n  en pétrole et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+#Problème axe des ordonnées à régler !!!!!!
+
+
+graph13b <- ggplot(data=fortify(merge(z1$Nuclear,z1$Coal),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des consommations primaires \n  en charbon et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph13c <- ggplot(data=fortify(merge(z1$Nuclear,z1$Gas),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des consommations primaires \n  en gaz et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+graph13d<- ggplot(data=fortify(merge(z1$Nuclear,z1$Hydroelectricity),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "green"),labels = c("Nucléaire","Hydroélectricité"))+
+  labs(title="Evolution comparée des consommations primaires \n  en hydroélectricité et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+
+#Diagrammes en bâtons : options dodge et stack
+
+#graph14 <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) + 
+#geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "dodge")
+
+graph15a <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des consommations primaires \n  en pétrole et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph15b <- ggplot(data=fortify(merge(z1$Nuclear,z1$Coal),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series), stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des consommations primaires \n  en charbon et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph15c <- ggplot(data=fortify(merge(z1$Nuclear,z1$Gas),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des consommations primaires \n  en gaz et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph15d <- ggplot(data=fortify(merge(z1$Nuclear,z1$Hydroelectricity),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "green"),labels = c("Nucléaire","Hydroélectricité"))+
+  labs(title="Evolution comparée des consommations primaires \n  en gaz et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+#Barres : Proportions relatives
+
+graph16a <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity",position = "fill")+
+  scale_fill_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des consommations primaires \n  en pétrole et nucléaire en France",x="Année",y="Proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph16b <- ggplot(data=fortify(merge(z1$Nuclear,z1$Coal),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series), stat = "identity", position = "fill")+
+  scale_fill_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des consommations primaires \n  en charbon et nucléaire en France",x="Année",y="Proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph16c <- ggplot(data=fortify(merge(z1$Nuclear,z1$Gas),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "fill")+
+  scale_fill_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des consommations primaires \n  en gaz et nucléaire en France",x="Année",y="Proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+
+#2.¨Production
+
+graph17a <- ggplot(data=fortify(merge(z4$Oil,z4$Nuclear),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des productions primaires \n  en pétrole et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+#Problème axe des ordonnées à régler !!!!!!
+
+
+graph17b <- ggplot(data=fortify(merge(z4$Nuclear,z4$Coal),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des productions primaires \n  en charbon et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph17c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des productions primaires \n  en gaz et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+graph17d <- ggplot(data=fortify(merge(z4$Nuclear,z4$Hydroelectricity),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("orange", "green"),labels = c("Nucléaire","Hydroélectricité"))+
+  labs(title="Evolution comparée des productions primaires \n  en nucléaire et hydroélectricité en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+#Diagrammes en bâtons : options dodge et stack
+
+#graph14 <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) + 
+#geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "dodge")
+
+graph18a <- ggplot(data=fortify(merge(z4$Oil,z4$Nuclear),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des productions primaires \n  en pétrole et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+graph18b <- ggplot(data=fortify(merge(z4$Nuclear,z4$Coal),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series), stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des productions primaires \n  en charbon et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph18c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des productions primaires \n  en gaz et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph18d <- ggplot(data=fortify(merge(z4$Nuclear,z4$Hydroelectricity),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("orange", "green"),labels = c("Nucléaire","Hydroélectricité"))+
+  labs(title="Evolution comparée des productions primaires \n  en hydroélectricité et nucléaire en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Barres : Proportions relatives
+
+graph19a <- ggplot(data=fortify(merge(z4$Oil,z4$Nuclear),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "fill")+
+  scale_fill_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
+  labs(title="Evolution comparée des productions primaires \n  en pétrole et nucléaire en France",x="Année",y="proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph19b <- ggplot(data=fortify(merge(z4$Nuclear,z4$Coal),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series), stat = "identity", position = "fill")+
+  scale_fill_manual(values = c("orange", "brown"),labels = c("Nucléaire","Charbon"))+
+  labs(title="Evolution comparée des productions primaires \n  en charbon et nucléaire en France",x="Année",y="proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+graph19c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) + 
+  geom_bar(aes (x=Index, y =as.numeric(Value), fill=Series),stat = "identity", position = "fill")+
+  scale_fill_manual(values = c("orange", "blue"),labels = c("Nucléaire","Gaz"))+
+  labs(title="Evolution comparée des productions primaires \n  en gaz et nucléaire en France",x="Année",y="proportion relative")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
+#Conclusion générale : les mix énergétique de la consommation et de la production sont très différents.
+#Par exemple, le nucléaire représente une plus grande part de la prod que de la conso, pour les énergies fossiles c'est plutôt l'inverse.
+
+
+
+#Astuces supplémentaires
+
+# #On regroupe les données sur la conso et sur la prod, en se limitant à la période pour laquelle on n'a pas de valeurs manquantes
+# z5 <- merge(z1,z4,all = FALSE)
+# 
+# 
+# 
+# #Pour passer d'une série temporelle fréq courte à fréq longue : aggregate
+# 
+# #Dans l'autre sens : il faut changer la fréquence de la zoo
+# 
+# #Passer d'un zoo à un data frame
+# 
+# df_test <- as.data.frame(z1)
 
 
 
 
+#On peut aussi le faire sur des bases de données avec colonne où il y a une chaîne de caractères en utilisant as.date
+
+#IV.Intensité du PIB en consommation primaire de pétrole ( en TEP)
+
+df9 <- read_tsv(file='données/Total Primary Oil Consumption intensity of GDP,  1980-2016 (in toe).csv')
+
+z2.index <- as.Date(df9$Annee,tryFormats = "%d/%m/%Y")
+z2.data <- df9 [,-1]
+
+z2 <- zoo(z2.data, order.by = as.yearmon(z2.index), frequency = 12)
+#Série temporelle mensuelle
+
+z3 <- zoo(z2.data, order.by = as.yearqtr(z2.index), frequency = 4)
+#Série temporelle trimestrielle
+
+graph20 <- ggplot(data=fortify(merge(z2$France,z2$Allemagne,z2$Europe),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
+  labs(title="Evolution comparée des intensités du PIB\n  en consommation primaire de pétrole",x="Année",y="tonnes d'équivalent pétrole")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
 
 
 
