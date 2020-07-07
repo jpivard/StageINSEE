@@ -122,16 +122,6 @@ graph5 <- ggplot(df_6_long, aes(x=consommation_finale_energies_renouvelables,y=v
 #La distribution des valeurs est beaucoup plus étalée pour l'Allemagne  que pour la France 
 
 
-graph6 <- ggplot(data = df_6_long ) + aes (x=annee, y = value , col =consommation_finale_energies_renouvelables) + geom_line() +
-  scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
-  labs(title="Evolution comparée de la consommation \n d'énergies renouvelables en France,\n en Allemagne et dans l'UE", x="Année", y="Valeur(en TEP)")+
-  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
-  labs(color = "Pays")
-#On remarque que la tendance allemande est plus proche de la tendance européenne que ne l'est la France, qui stagne un peu.
-#L'Allemagne a d'ailleurs dépassé la France sur les dernières années alors qu'elle démarrait de beaucoup plus bas.
-
-
-
 #II. Production primaire d'énergies renouvelables (en TEP)
 
 
@@ -173,9 +163,62 @@ graph8 <- ggplot(data = df_7_long ) + aes (x=annee, y = value , col =production_
 
 
 
-#Autres pistes:
-#Parts des ER dans la conso et la prod d'énergie primaire
-#Utiliser la package Zoo pour traiter en séries temporelles
+#III. Parts des ER dans la conso et la prod d'énergie primaire
+
+
+df_8 =  read_tsv(file='données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
+#Attention : pour les fichiers dont les colonnes sont séparées par tab, il faut utiliser read_tsv.
+
+df_9 = read_tsv(file='données/Renewable_Energy_Production_share_of_primary_energy.csv')
+
+#On enlève le Royaume-Uni (pour des raisons pratiques)
+df_8 <- df_8[,-5]
+
+
+#Consommation
+
+colonnes_3<- c("France", "Allemagne","Italie","UE") 
+df_8_long <- df_8 %>% pivot_longer(colonnes_3, names_to = "pays", values_to = "part_energies_renouvelables_conso_primaire") 
+
+
+graph17 <- ggplot(df_8_long, aes(x=Annee,y=part_energies_renouvelables_conso_primaire, color=pays),lwd=2) +
+  scale_color_manual(values = c("#E69F00", "#56B4E9","red","#009E73"),labels = c("Allemagne","France","Italie","UE"))+
+  geom_line()+
+  labs(title="Part des énergies renouvelables \n dans la consommation primaire \n en France, en Allemagne, en Italie et dans l'UE", x="Pays", y="en pourcentage")+
+  theme(plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#La part des ER est la plus élevée en Italie (avec une forte progression depuis 2005), puis dans l'UE.
+#C'est en France que l'on consomme le moins d'ER en proportion (à peine plus de 10% du mix énergétique), malgré une tendance récente à la hausse également.
+
+
+
+#Voyons s'il en va de même pour la part dans la production.
+
+
+colonnes_4<- c("France", "Allemagne","Italie","UE") 
+df_9_long <- df_9 %>% pivot_longer(colonnes_4, names_to = "pays", values_to = "part_energies_renouvelables_prod_primaire") 
+
+
+graph18 <- ggplot(df_9_long, aes(x=Annee,y=part_energies_renouvelables_prod_primaire, color=pays),lwd=2) +
+  scale_color_manual(values = c("#E69F00", "#56B4E9","red","#009E73"),labels = c("Allemagne","France","Italie","UE"))+
+  geom_line()+
+  labs(title="Part des énergies renouvelables \n dans la production primaire \n en France, en Allemagne, en Italie et dans l'UE", x="Pays", y="en pourcentage")+
+  theme(plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Les énergies renouvelables représentant la majeure partie de la production en Italie (aussi pour des raisons géographiques), avec une proportion pouvant dépasser les 3/4 quoique très fluctuante.
+#Dans les trois autres zones, elle est en progression globale mais demeure bien inférieure.
+#En Allemagne, croissance exponentielle depuis les années 80, alors qu'en France pic à la fin des années 70 inégalé depuis.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
