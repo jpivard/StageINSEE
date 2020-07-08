@@ -105,4 +105,114 @@ graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
 
 
 
+#III. Intensité carbone du PIB (en tonnes d'équivalent CO2 par dollar ) et de l'énergie
+
+df3 = read_csv(file='données/Emissions intensity of GDP data.csv')
+
+df4 = read_csv(file='données/Emissions intensity of primary energy data.csv')
+
+#1.PIB
+
+df3_past <- df3[-c(83:90),] 
+df3_past <- df3_past[-28,]
+#On retire les colonnes correspondant à des prévisions et la donnée supplémentaire pour l'UE (on prend la dernière pour simplifier)
+
+df3_past$year<- c(rep(seq(1990,2016),3))
+                  
+#On supprime les colonnes inutiles et on renomme les colonnes restantes
+
+df3_past <- df3_past[,-c(1:2)]
+df3_past <- df3_past[,-2]
+df3_past <- df3_past[,-3]
+
+colnames(df3_past)[1] <- 'pays'
+colnames(df3_past)[2] <- 'valeur'
+colnames(df3_past)[3] <- 'annee'
+
+#Evolution comparée des intensités en CO2 du PIB
+
+graph5 <- ggplot(df3_past, aes(x=annee,y= valeur, color=pays)) +
+  scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
+  labs(title="Evolution des intensités en émissions de CO2 \n  du PIB en France, en Allemagne et en Europe ", x="Secteur", y="Valeur(en tonnes d'équivalent CO2 par dollar)")+
+  geom_line()+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Deux enseignements :
+#Tendance globale à la baisse, qui peut s'expliquer soit par une réduction des émissions soit par une hausse du PIB plus rapide que celle des émissions, soit les deux à la fois (le plus plausible)
+#La France est nettement sous l'Allemagne et sous la moyenne européenne.
+
+graph6 <- ggplot(df3_past, aes(x=annee,y= valeur, fill=pays)) +
+  scale_fill_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
+  labs(title="Evolution des intensités en émissions de CO2 \n  du PIB en France, en Allemagne et en Europe ", x="Secteur", y="Valeur(en tonnes d'équivalent CO2 par dollar)")+
+  geom_area()+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Evolution en proportions relatives : l'Allemagne et l'Europe ont diminué plus vite que la France.
+
+
+#2.Intensité carbone de l'énergie primaire ( en tonnes de CO2 par TJ)
+
+df4_past <- df4[-c(81:86),] 
+df4_past <- df4_past[-26,] 
+df4_past <- df4_past[-53,] 
+#On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
+
+df4_past$year<- c(rep(seq(1990,2015),3))
+
+#On supprime les colonnes inutiles et on renomme les colonnes restantes
+
+df4_past <- df4_past[,-c(1:2)]
+df4_past <- df4_past[,-2]
+df4_past <- df4_past[,-3]
+
+colnames(df4_past)[1] <- 'pays'
+colnames(df4_past)[2] <- 'valeur'
+colnames(df4_past)[3] <- 'annee'
+
+#Evolution comparée des intensités en CO2 de l'énergie primaire
+
+graph7 <- ggplot(df4_past, aes(x=annee,y= valeur, color=pays)) +
+  scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
+  labs(title="Evolution des intensités en émissions de CO2 \n  de l'énergie primaire en France, en Allemagne et en Europe ", x="Année", y="Valeur(en tonnes d'équivalent CO2 par térajoule)")+
+  geom_line()+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Ce graphique confirme les deux tendances observées pour l'intensité carbone du PIB.
+
+
+# graph8 <- ggplot(df4_past, aes(x=annee,y= valeur)) +
+#   geom_bar(aes (x=annee, y =valeur, fill=secteur),stat = "identity", position = "stack")+
+#   scale_fill_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
+#   labs(title="Evolution des intensités en émissions de CO2 \n  de l'énergie primaire en France, en Allemagne et en Europe ", x="Année", y="Valeur(en tonnes d'équivalent CO2 par térajoule)")+
+#   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
+
+  
+#Problème pour représenter diagramme en barres.
+
+
+
+#IV. Analyse de l'évolution des grandeurs de l'équation de Kaya en France après 1980 (en base 100)
+
+
+#Comment expliquer la baisse des émissions de CO2 depuis 1980 ? Par quel(s) canal(canaux)?
+
+df5 = read_tsv(file='données/KAYA identity, France, 1980-2015 (in base 100).csv')
+
+colnames(df5)[2]<- 'Contenu CO2 energie'
+colnames(df5)[3]<- 'Intensite_energetique_PIB'
+colnames(df5)[4]<- 'PIB par tete'
+
+colonnes4 <- c('Contenu CO2 energie','Intensite_energetique_PIB', 'PIB par tete','Population')
+df5_long <- df5 %>% pivot_longer(colonnes4, names_to = 'composantes', values_to = "value")
+
+
+graph9 <- ggplot(df5_long, aes(x=Annee,y= value, color=composantes)) +
+  scale_color_manual(values = c("red","blue","orange","black"),labels = c("Contenu en CO2 de l'énergie", "Intensité énergétique du PIB", "PIB par tête", "Population"))+
+  labs(title="Evolution des composantes des émissions de CO2 \n  en France après 1980 ", x="Année", y="base 100")+
+  geom_line()+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Deux composantes ont augmenté : le PIB/tête assez fortement, et la population dans une moindre mesure
+#Deux autres ont baissé assez fortement : contenu carbone de l'énergie, et intensité énergétique du PIB.
+
 
