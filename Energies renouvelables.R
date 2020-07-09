@@ -159,8 +159,9 @@ graph8 <- ggplot(data = df_7_long ) + aes (x=annee, y = value , col =production_
 #Progression continue et rapide en France et dans l'UE, progression plus tardive et plus lente en Allemagne, dépassée par la France au milieu des années 2000.
 #On a donc une situation différente (presque symétriquement opposée)à celle de la consommation.
 
+#On regroupe les deux pour visualiser sur Shiny
 
-
+df_groupe <-  df_6 %>% left_join(df_7, by ="annee", copy=FALSE)
 
 
 #III. Parts des ER dans la conso et la prod d'énergie primaire

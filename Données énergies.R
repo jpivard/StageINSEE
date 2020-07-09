@@ -91,8 +91,8 @@ class(as.data.frame(df2))#On a transformé le tibble en data frame
 
 colnames(df2)[2] <- 'consommation_electricite_fr'
 
-df2 <- df2[-56,]
-#En exécutant cinq fois cette ligne, on a supprimé les dernières lignes qui ne contiennent pas de valeurs.
+df2 <- df2[-c(56:60),]
+#On a supprimé les dernières lignes qui ne contiennent pas de valeurs.
 
 summarise(df2,mean(consommation_electricite_fr))
 #On obtient une moyenne de 5122.39 pour la France, c'est bien la même que tout à l'heure donc c'est cohérent
