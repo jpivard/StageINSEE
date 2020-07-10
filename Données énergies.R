@@ -85,7 +85,7 @@ hist(df1$value, col="gold", main="Consommation d'électricité")   #Histogramme 
 
 #On récupère les données d'une autre table seulement sur la France
 
-df2= read_csv(file ='~/données/Conso_electricite_fr.csv')
+df2= read_csv(file ='données/Energie/Conso_electricite_fr.csv')
 
 class(as.data.frame(df2))#On a transformé le tibble en data frame
 
@@ -114,7 +114,7 @@ hist(df2$consommation_electricite_fr, col="blue", main="Consommation d'électric
 # #Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
 
 #On reprend donc l'autre méthode d'importation
-df4 = read_csv(file='~/données/Production_energie_fr.csv')
+df4 = read_csv(file='données/Energie/Production_energie_fr.csv')
 
 colnames(df4)[2] <- 'production_totale_energie_fr'
 
@@ -130,9 +130,10 @@ hist(df4$production_totale_energie_fr, col="red", main="Production d'énergie en
 
 
 
+
 #Regardons maintenant l'Allemagne
 
-df5 = read_csv(file='~/données/Production_energie_all.csv')
+df5 = read_csv(file='données/Energie/Production_energie_all.csv')
 
 colnames(df5)[2] <- 'production_totale_energie_all'
 
@@ -177,7 +178,7 @@ df_fr_all <- df4 %>% left_join(df5, by ="period", copy=FALSE)
   
 class(as.data.frame(df_fr_all))
 
-df_fr_all <- df_fr_all[,-3]
+# df_fr_all <- df_fr_all[,-3]
 
 colnames(df_fr_all)[1] <- 'annee'
 colnames(df_fr_all)[2] <- 'production_totale_energie_fr'
