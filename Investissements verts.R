@@ -57,7 +57,6 @@ df_depenses_rechdev <- df_depenses_rechdev [-1,]
 # colnames(df_depenses_rechdev)[4]<- "Etats-Unis"
 # colnames(df_depenses_rechdev)[5]<- "Chine"
 
-#On abandonne ce tableau qui est trop compliqué à mettre en forme 
-
+#On abandonne ce tableau qui est trop compliqué à mettre en forme...
 
 
