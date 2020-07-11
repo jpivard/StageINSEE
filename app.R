@@ -9,150 +9,102 @@
 
 library(shiny)
 
-#Ce fichier répertorie quelques exemples de widgets déjà construits. Il suffit de décommenter et d'éxecuter la partie qu'on veut tester.
-
-
-
-
-# 1. Action button
-
-# ui <- fluidPage(
+# library(datasets)
+# view(WorldPhones)
 # 
-#     # Copy the line below to make an action button
-#     actionButton("action", label = "Action"),
+# #J'ai trouvé la cause du problème : dans le tableau df2, les années ne devraient pas être une variable...
+# 
+# df2_shiny = read_csv(file='données/Emissions par secteurs pour Shiny.csv')
+# 
+# #Impossible de lui faire comprendre que la première colonne ne doit pas être reconnue comme des nombres
+# #Pourtant j'ai tout fait comme dans la base de données WorldPhones et j'ai tout essayé dans le bloc_notes et l'Excel...
+# 
+# 
+# # Use a fluid Bootstrap layout
+# ui <- fluidPage(    
 #     
-#     hr(),
-#     fluidRow(column(2, verbatimTextOutput("value")))
+#     # Give the page a title
+#     titlePanel("Emissions de CO2 par secteur"),
 #     
-#     
-#    
+#     # Generate a row with a sidebar
+#     sidebarLayout(      
+#         
+#         # Define the sidebar with one input
+#         sidebarPanel(
+#             selectInput("secteur", "Secteur:", 
+#                         choices=colnames(df2[,c(2:5)])),
+#             hr(),
+#             helpText("Données du dernier rapport Secten par le Citepa.")
+#         ),
+#         
+#         # Create a spot for the barplot
+#         mainPanel(
+#             plotOutput("Courbe_secteurs")  
 #         )
+#         
+#     )
+# )
 # 
-# # Define server logic required to draw a histogram
-# server <- function(input, output) {
+# # Define a server for the Shiny app
+# # server <- function(input, output) {
+# #     
+# #     # Fill in the spot we created for a plot
+# #     output$Courbe_secteurs <- renderPlot({
+# #         
+#         # Render a barplot
+#         
+#         # secteur = colnames(df2[,c(2:5)])
+#         # 
+#         # if  (secteur == "Energie")
+#         #     
+#         # {barplot(df2$Energie, 
+#         #         main=input$Energie,
+#         #         ylab="Emissions en Mtoe",
+#         #         xlab="Année") }
+#         # 
+#         # else (secteur == "Ind_manuf")
+#         # 
+#         # {barplot(df2$Ind_manuf, 
+#         #         main=input$Ind_manuf,
+#         #         ylab="Emissions en Mtoe",
+#         #         xlab="Année") }
+#         # 
+#         # else (secteur == "Residentiel_Tertiaire")
+#         # 
+#         # {barplot(df2$Residentiel_Tertiaire, 
+#         #         main=input$Residentiel_Tertiaire,
+#         #         ylab="Emissions en Mtoe",
+#         #         xlab="Année") }
+#         # 
+#         # 
+#         # else (secteur == "Transports")
+#         # 
+#         # {barplot(df2$Transports, 
+#         #         main=input$Transports,
+#         #         ylab="Emissions en Mtoe",
+#         #         xlab="Année")}
 # 
-#     output$value <- renderPrint({ input$action })
-#     
+#         
+#         # Define a server for the Shiny app
+#         server <- function(input, output) {
+#             
+#             # Fill in the spot we created for a plot
+#             output$Courbe_secteurs <- renderPlot({
+#         
+#         barplot(df2$Energie, 
+#                 main=input$Energie,
+#                 ylab="Emissions en Mtoe",
+#                 xlab="Année")
+#         
+#     })
 # }
 # 
 # # Run the application 
 # shinyApp(ui = ui, server = server)
 
 
-#2. Checkbox group
 
-# ui <- fluidPage(
-#   
-#   # Copy the chunk below to make a group of checkboxes
-#   checkboxGroupInput("checkGroup", label = h3("Secteur"), 
-#                      choices = list("Transport" = 1, "Bâtiment" = 2, "Energie" = 3),
-#                      selected = 1),
-#   
-#   
-#   hr(),
-#   fluidRow(column(3, verbatimTextOutput("value")))
-#   
-# )
-# 
-# server <- function(input, output) {
-#   
-#   # You can access the values of the widget (as a vector)
-#   # with input$checkGroup, e.g.
-#   output$value <- renderPrint({ input$checkGroup })
-#   
-# }
-# 
-# shinyApp(ui = ui, server = server)
+#On va prendre une autre base de données
 
-
-#3.Date input
-
-# ui <- fluidPage(
-#   
-#   # Copy the line below to make a date selector 
-#   dateInput("date", label = h3("Date input"), value = "2014-01-01"),
-#   
-#   hr(),
-#   fluidRow(column(3, verbatimTextOutput("value")))
-#   
-# )
-# 
-# server <- function(input, output) {
-#   
-#   # You can access the value of the widget with input$date, e.g.
-#   output$value <- renderPrint({ input$date })
-#   
-# }
-# 
-# shinyApp(ui = ui, server = server)
-
-
-#4. Date range
-
-# ui <- fluidPage(
-#   
-#   # Copy the line below to make a date range selector
-#   dateRangeInput("dates", label = h3("Date range")),
-#   
-#   hr(),
-#   fluidRow(column(4, verbatimTextOutput("value")))
-#   
-# )
-# 
-# server <- function(input, output) {
-#   
-#   # You can access the values of the widget (as a vector of Dates)
-#   # with input$dates, e.g.
-#   output$value <- renderPrint({ input$dates })
-#   
-# }
-# 
-# shinyApp(ui = ui, server = server)
-
-
-# #5. File upload
-# 
-# ui <- fluidPage(
-#   
-#   # Copy the line below to make a file upload manager
-#   fileInput("file", label = h3("File input")),
-#   
-#   hr(),
-#   fluidRow(column(4, verbatimTextOutput("value")))
-#   
-# )
-# 
-# server <- function(input, output) {
-#   
-#   # You can access the value of the widget with input$file, e.g.
-#   output$value <- renderPrint({
-#     str(input$file)
-#   })
-#   
-# }
-# 
-# shinyApp(ui = ui, server = server)
-# 
-
-# #6. Text input
-# 
-# ui <- fluidPage(
-#   
-#   # Copy the line below to make a text input box
-#   textInput("text", label = h3("saisie de texte"), value = "Entrez votre texte..."),
-#   
-#   hr(),
-#   fluidRow(column(3, verbatimTextOutput("value")))
-#   
-# )
-# 
-# server <- function(input, output) {
-#   
-#   # You can access the value of the widget with input$text, e.g.
-#   output$value <- renderPrint({ input$text })
-#   
-# }
-# 
-# shinyApp(ui = ui, server = server)
 
 
