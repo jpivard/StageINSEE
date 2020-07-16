@@ -237,9 +237,13 @@ ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production
 #III.Répartitions des différentes sources d'énergie dans la consommation et dans la production primaires en France
 
 
-df7 <- read_tsv(file="données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+df7 <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
 
-df8 <- read_tsv(file = "données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+df8 <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+
+df9 <- read_tsv(file="~/données/Primary Energy Consumption by source, Europe, 1980-2016 (in Mtoe).csv")
+
+df10<- read_tsv(file="~/données/Primary Energy Production by source, Europe, 1900-2016 (in Mtoe).csv")
 
 
 #Utilisons le package Zoo pour traiter les données en séries temporelles
@@ -263,8 +267,45 @@ z4 <- zoo(z4.data, order.by=z4.index)
 
 #On remarque que les énergies renouvelables représentent une proportion très faible du mix énergétique (à part l'hydroélectricité)
 
+#Ajouter comparaison avec l'Europe !
+
+z5.index <- df9$X1
+z5.data <- df9 [,-1]
+
+z5 <- zoo(z5.data, order.by=z5.index)
+
+z6.index <- df10$X1
+z6.data <- df10 [,-1]
+
+z6 <- zoo(z6.data, order.by=z6.index)
+
+
+
 
 #1. Consommation
+
+#Evolution comparée des différentes sources
+
+graphshiny1 <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear,z1$Coal, z1$Gas, z1$Hydroelectricity),melt=TRUE)) + 
+  geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
+  scale_color_manual(values = c("black", "orange","brown","blue","green"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
+  labs(title="Evolution comparée des consommations primaires \n  des principales sources d'énergie en France",x="Année",y="Mtoe")+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+#Sans Zoo
+
+df7 <- df7[,-c(7:12)]
+
+colonnes7 <- c("Oil","Coal","Gas","Nuclear","Hydroelectricity")
+df7_long <- df7 %>% pivot_longer(colonnes7, names_to = 'pays', values_to = "value")
+
+graphshiny1_bis <- ggplot(df7_long, aes(x=Annee,y= value, color=pays)) +
+  scale_color_manual(values = c("black", "orange","brown","blue","green"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
+  labs(title="Evolution comparée des consommations primaires \n  des principales sources d'énergie en France", x="Année", y="Valeur(en millions de tonnes d'équivalent CO2)")+
+  geom_line()+
+  theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
+
+
 
 #Evolution comparée des consommations primaires en pétrole,et nucléaire
 #Puis charbon et nucléaire
@@ -275,7 +316,6 @@ graph13a <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear),melt=TRUE)) +
   scale_color_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
   labs(title="Evolution comparée des consommations primaires \n  en pétrole et nucléaire en France",x="Année",y="Mtoe")+
   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
-#Problème axe des ordonnées à régler !!!!!!
 
 
 graph13b <- ggplot(data=fortify(merge(z1$Nuclear,z1$Coal),melt=TRUE)) + 
@@ -464,6 +504,7 @@ graph19c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) +
 
 
 #On peut aussi le faire sur des bases de données avec colonne où il y a une chaîne de caractères en utilisant as.date
+
 
 #IV.Intensité du PIB en consommation primaire de pétrole ( en TEP)
 

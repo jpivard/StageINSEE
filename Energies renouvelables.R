@@ -13,7 +13,7 @@ library(tidyverse)
 
 #I. Consommation finale d'énergies renouvelables en France (en TOE), comparaison avec le nucléaire et le fossile
 
-df_1 =read.csv(file='données/Energie/Consommation_finale_energies_renouvelables_France.csv')
+df_1 =read.csv(file='~/données/Consommation_finale_energies_renouvelables_France.csv')
 
 colnames(df_1 )[1] <- 'annee'
 colnames(df_1 )[2] <- 'consommation_finale_energies_renouvelables_fr'
@@ -77,7 +77,7 @@ theme(legend.position = "bottom",plot.title = element_text(family="TT Times New 
 
 #Sur l'évolution de la consommation finale d'énergies renouvelables dans l'UE
 
-df_4 = read.csv(file = 'données/Energie/conso_finale_energies_renouvelables_UE.csv')
+df_4 = read.csv(file = '~/données/conso_finale_energies_renouvelables_UE.csv')
 
 colnames(df_4 )[1] <- 'annee'
 colnames(df_4 )[2] <- 'consommation_finale_energies_renouvelables_UE'
@@ -91,7 +91,7 @@ ggplot(data = df_4 ) + aes (x=annee, y=consommation_finale_energies_renouvelable
 
 #Comparaison avec l'Allemagne (pour comparer les valeurs cette fois et pas seulement la tendance)
 
-df_5 = read.csv(file='données/Energie/conso_finale_energies_renouvelables_all.csv')
+df_5 = read.csv(file='~/données/conso_finale_energies_renouvelables_all.csv')
 
 colnames(df_5)[1] <- 'annee'
 colnames(df_5)[2] <- 'consommation_finale_energies_renouvelables_All'
@@ -125,7 +125,7 @@ graph5 <- ggplot(df_6_long, aes(x=consommation_finale_energies_renouvelables,y=v
 #II. Production primaire d'énergies renouvelables (en TEP)
 
 
-df_7 =read.csv(file='données/Energie/Production_primaire_energies_renouvelables.csv')
+df_7 =read.csv(file='~/données/Production_primaire_energies_renouvelables.csv')
 
 colnames(df_7)[1] <- 'annee'
 colnames(df_7)[2] <- 'France'

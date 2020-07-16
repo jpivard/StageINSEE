@@ -12,14 +12,16 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
+df5 = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
+
 dataset <- df5
 
-df5_shiny <- df5[,-1]
-colnames(df5)[2]<- 'Contenu carbone energie'
-colnames(df5)[3]<- 'Intensite energetique PIB'
+df5 <- df5[,-1]
+colnames(df5)[2]<- 'Contenu_carbone_energie'
+colnames(df5)[3]<- 'Intensite_energetique_PIB'
 colnames(df5)[4]<- 'PIB_par_tete'
 
-# Define UI for application that draws a histogram
+# Define UI 
 ui <-fluidPage ( title = "Evolution des composantes des émissions de dioxyde de carbone en France après 1980",
                     
                 plotOutput('plot'),
@@ -38,7 +40,7 @@ ui <-fluidPage ( title = "Evolution des composantes des émissions de dioxyde de
         ),
                         
         column(5,
-            selectInput('y', 'Y', c("Contenu carbone energie","Population","Intensite energetique PIB","PIB_par_tete") ),
+            selectInput('y', 'Y', c("Contenu_carbone_energie","Population","Intensite_energetique_PIB","PIB_par_tete") ),
                       
                     ),
      ),
@@ -48,7 +50,7 @@ ui <-fluidPage ( title = "Evolution des composantes des émissions de dioxyde de
 #Ajouter une note sur l'équation de Kaya
 
 
-# Define server logic required to draw a histogram
+# Define server logic 
 server <- function(input, output) {
     
     dataset <- reactive({
@@ -57,7 +59,7 @@ server <- function(input, output) {
     
     output$plot <- renderPlot({
         
-        p <- ggplot(dataset(), aes_string(x=input$periode_observee, y=input$y, color=colnames(df5_shiny))) + geom_line() +
+        p <- ggplot(dataset(), aes_string(x=input$periode_observee, y=input$y, color=colnames(df5))) + geom_line() +
             # scale_color_manual(values = c("red","blue","orange","black"),labels = c("Contenu en CO2 de l'énergie", "Intensité énergétique du PIB", "PIB par tête", "Population"))+
             # labs(title="Evolution des composantes des émissions de CO2 \n  en France après 1980 ", x="Année", y="base 100")+
             # theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))

@@ -9,6 +9,10 @@
 
 library(shiny)
 
+df2 =read_csv('~/données/Emissions par secteurs pour Shiny.csv')
+
+colnames(df2)[1] <- "annee"
+
 # Define UI for application that draws a histogram
 ui <- bootstrapPage(
     
@@ -41,11 +45,13 @@ server <- function(input, output) {
     
     output$main_plot <- renderPlot({
         
-        hist(df2$Energie,
+        secteur=c("Energie","Ind_manuf","Residentiel_Tertiaire","Transports")
+        
+        hist(df2[,input$secteur],
              probability = TRUE,
              breaks = as.numeric(input$n_breaks),
              xlab = "Emissions de CO2(en Mt)",
-             main = "Emissions annuelles de CO2 par le secteur de l'énergie")
+             main = "Evolutions des émissions annuelles de CO2" )
         
         if (input$individual_obs) {
             rug(df2$Energie)

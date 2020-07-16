@@ -36,7 +36,7 @@ library(shiny)
              selectInput("secteur", "Choisissez un secteur à observer:",
                          choices=colnames(df2_shiny)),
              hr(),
-             helpText("Données du dernier rapport Secten par le Citepa.")
+             helpText("Données du dernier rapport Secten par le Citepa. Chaque barre correspond à une année entre 1990 et 2019")
          ),
 
          # Create a spot for the barplot
@@ -61,7 +61,7 @@ library(shiny)
                                   main=input$secteur,
                                   ylab="Emissions en Mtoe",
                                   xlab="Année",
-                                   )
+                                        )
           
               })
           }

@@ -17,12 +17,10 @@ library(readr)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
-
-
-
 library(shiny)
 
-Kaya <- readRDS("data/counties.rds")
+
+counties <- readRDS("data/counties.rds")
 
 source("helpers.R")
 
