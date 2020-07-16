@@ -114,7 +114,7 @@ hist(df2$consommation_electricite_fr, col="blue", main="Consommation d'électric
 # #Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
 
 #On reprend donc l'autre méthode d'importation
-df4 = read_csv(file='données/Energie/Production_energie_fr.csv')
+df4 = read_csv(file='~/données/Production_energie_fr.csv')
 
 colnames(df4)[2] <- 'production_totale_energie_fr'
 
@@ -133,7 +133,7 @@ hist(df4$production_totale_energie_fr, col="red", main="Production d'énergie en
 
 #Regardons maintenant l'Allemagne
 
-df5 = read_csv(file='données/Energie/Production_energie_all.csv')
+df5 = read_csv(file='~/données/Production_energie_all.csv')
 
 colnames(df5)[2] <- 'production_totale_energie_all'
 
@@ -508,7 +508,7 @@ graph19c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) +
 
 #IV.Intensité du PIB en consommation primaire de pétrole ( en TEP)
 
-df9 <- read_tsv(file='données/Total Primary Oil Consumption intensity of GDP,  1980-2016 (in toe).csv')
+df9 <- read_tsv(file='~/données/Total Primary Oil Consumption intensity of GDP,  1980-2016 (in toe).csv')
 
 z2.index <- as.Date(df9$Annee,tryFormats = "%d/%m/%Y")
 z2.data <- df9 [,-1]

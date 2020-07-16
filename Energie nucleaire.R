@@ -9,9 +9,9 @@ library(ggplot2)
 library(tidyverse)
 library(dplyr)
 
-#I. La place de l'énergie nucléaire dans l'énergie produite (en millions de KwH): comparaison France-Allemagne
+# La place de l'énergie nucléaire dans l'énergie produite (en millions de KwH): comparaison France-Allemagne
 
-df6 =  read_csv(file='données/Conso_energie_nucleaire_France_Allemagne.csv')
+df6 =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
 
 df6 <- df6 [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
 

@@ -15,7 +15,7 @@ library(dplyr)
 
 #I. Emissions de CO2 globales de la France, et comparaison avec l'Allemagne et avec la tendance européenne
 
-df1= read_tsv(file="données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
+df1= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
 
 colnames(df1)[1]<- 'Annee'
 colnames(df1)[4]<- 'Allemagne'
@@ -101,15 +101,15 @@ graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
 
 #Afin d'avoir une idée de l'intensité carbone des différents secteurs, on va essayer de pondérer leurs émissions par leur production.
 
-
+#Difficultés pratiques (différence des découpages sectoriels) nous ont conduit à mettre l'idée de côté.
 
 
 
 #III. Intensité carbone du PIB (en tonnes d'équivalent CO2 par dollar ) et de l'énergie
 
-df3 = read_csv(file='données/Emissions intensity of GDP data.csv')
+df3 = read_csv(file='~/données/Emissions intensity of GDP data.csv')
 
-df4 = read_csv(file='données/Emissions intensity of primary energy data.csv')
+df4 = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
 
 #1.PIB
 
@@ -196,7 +196,7 @@ graph7 <- ggplot(df4_past, aes(x=annee,y= valeur, color=pays)) +
 
 #Comment expliquer la baisse des émissions de CO2 depuis 1980 ? Par quel(s) canal(canaux)?
 
-df5 = read_tsv(file='données/KAYA identity, France, 1980-2015 (in base 100).csv')
+df_Kaya = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
 
 colnames(df5)[2]<- 'Contenu CO2 energie'
 colnames(df5)[3]<- 'Intensite_energetique_PIB'

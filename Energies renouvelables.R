@@ -167,10 +167,10 @@ df_groupe <-  df_6 %>% left_join(df_7, by ="annee", copy=FALSE)
 #III. Parts des ER dans la conso et la prod d'énergie primaire
 
 
-df_8 =  read_tsv(file='données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
+df_8 =  read_tsv(file='~/données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
 #Attention : pour les fichiers dont les colonnes sont séparées par tab, il faut utiliser read_tsv.
 
-df_9 = read_tsv(file='données/Renewable_Energy_Production_share_of_primary_energy.csv')
+df_9 = read_tsv(file='~/données/Renewable_Energy_Production_share_of_primary_energy.csv')
 
 #On enlève le Royaume-Uni (pour des raisons pratiques)
 df_8 <- df_8[,-5]
