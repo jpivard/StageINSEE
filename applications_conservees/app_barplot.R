@@ -64,6 +64,9 @@ library(shiny)
                                         )
           
               })
+      
+      #Ajouter image du graphique fait dans R avec les barres de différentes couleurs.
+      
           }
 
           # Run the application
