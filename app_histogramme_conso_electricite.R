@@ -31,23 +31,34 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           plotOutput("courbe_conso_Fr"),
+           verbatimTextOutput("stats")
         )
     )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    
+    data <- reactive({
+        df2$consommation_electricite_fr    
+    })
 
-    output$distPlot <- renderPlot({
+    output$courbe_conso_Fr <- renderPlot({
         # generate years based on input$years from ui.R
-        x    <- df2$consommation_electricite_fr
+        x    <- data()
         years <- seq(min(x), max(x), length.out = input$period + 1)
 
         # draw the histogram with the specified number of bins
         hist(x, breaks = years, col = '#75AADB', border = 'orange',
-        xlab = "Consommation en TOE",
+        xlab = "Consommation en tonnes d'équivalent pétrole",
         main = "Histogramme sur la consommation d'électricité en France")
+    })
+    
+    
+    output$stats <- renderPrint({ 
+        summary(data())
+        
     })
 }
 

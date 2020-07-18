@@ -109,7 +109,7 @@ graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
 
 df3 = read_csv(file='~/données/Emissions intensity of GDP data.csv')
 
-df4 = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
+df4 = read_csv(file='données/Emissions intensity of primary energy data.csv')
 
 #1.PIB
 
@@ -153,7 +153,7 @@ graph6 <- ggplot(df3_past, aes(x=annee,y= valeur, fill=pays)) +
 #2.Intensité carbone de l'énergie primaire ( en tonnes de CO2 par TJ)
 
 df4_past <- df4[-c(81:86),] 
-df4_past <- df4_past[-26,] 
+df4_past <- df4_past[-80,] 
 df4_past <- df4_past[-53,] 
 #On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
 
