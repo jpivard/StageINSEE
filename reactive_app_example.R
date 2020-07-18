@@ -34,40 +34,39 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-    # Assignment: Remove duplication of `selected` and `model`
-    # code/calculations.
+    
+    # Introduce reactive expression for each calculated value
+    
+    selected <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+    })
+    
+    model <- reactive({
+        lm(paste(input$ycol, "~", input$xcol), selected())
+    })
+    
+    # And now the outputs can just use the reactive expressions
     
     output$plot <- renderPlot({
         
-        selected <- iris[, c(input$xcol, input$ycol)]
-        model <- lm(paste(input$ycol, "~", input$xcol), selected)
-        
-        plot(selected)
-        abline(model)
+        plot(selected())
+        abline(model())
     })
     
     output$modelInfo <- renderPrint({
         
-        selected <- iris[, c(input$xcol, input$ycol)]
-        model <- lm(paste(input$ycol, "~", input$xcol), selected)
-        
-        summary(model)
+        summary(model())
     })
     
     output$dataInfo <- renderPrint({
         
-        selected <- iris[, c(input$xcol, input$ycol)]
-        
-        summary(selected)
+        summary(selected())
     })
     
     output$table <- renderTable({
         
-        selected <- iris[, c(input$xcol, input$ycol)]
-        
-        head(selected, input$rows)
+        head(selected(), input$rows)
     })
 }
 
 shinyApp(ui, server)
-
