@@ -237,13 +237,13 @@ ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production
 #III.Répartitions des différentes sources d'énergie dans la consommation et dans la production primaires en France
 
 
-df7 <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+df_7 <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
 
-df8 <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+df_8 <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
 
-df9 <- read_tsv(file="~/données/Primary Energy Consumption by source, Europe, 1980-2016 (in Mtoe).csv")
+df_9 <- read_tsv(file="~/données/Primary Energy Consumption by source, Europe, 1980-2016 (in Mtoe).csv")
 
-df10<- read_tsv(file="~/données/Primary Energy Production by source, Europe, 1900-2016 (in Mtoe).csv")
+df_10<- read_tsv(file="~/données/Primary Energy Production by source, Europe, 1900-2016 (in Mtoe).csv")
 
 
 #Utilisons le package Zoo pour traiter les données en séries temporelles
@@ -252,15 +252,15 @@ install.packages("zoo")
 library(zoo)
 
 
-z1.index <- df7$Annee 
-z1.data <- df7[,-1]
+z1.index <- df_7$Annee 
+z1.data <- df_7[,-1]
 
 z1 <- zoo(z1.data,order.by = z1.index)
 
 #z1$Nuclear
 
-z4.index <- df8$X1
-z4.data <- df8 [,-1]
+z4.index <- df_8$X1
+z4.data <- df_8 [,-1]
 
 z4 <- zoo(z4.data, order.by=z4.index)
 
@@ -269,13 +269,13 @@ z4 <- zoo(z4.data, order.by=z4.index)
 
 #Ajouter comparaison avec l'Europe !
 
-z5.index <- df9$X1
-z5.data <- df9 [,-1]
+z5.index <- df_9$X1
+z5.data <- df_9 [,-1]
 
 z5 <- zoo(z5.data, order.by=z5.index)
 
-z6.index <- df10$X1
-z6.data <- df10 [,-1]
+z6.index <- df_10$X1
+z6.data <- df_10 [,-1]
 
 z6 <- zoo(z6.data, order.by=z6.index)
 
@@ -294,12 +294,14 @@ graphshiny1 <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear,z1$Coal, z1$Gas, z1$H
 
 #Sans Zoo
 
-df7 <- df7[,-c(7:12)]
+df_7 <- df_7[,-c(7:12)]
 
-colonnes7 <- c("Oil","Coal","Gas","Nuclear","Hydroelectricity")
-df7_long <- df7 %>% pivot_longer(colonnes7, names_to = 'pays', values_to = "value")
+colnames(df_7)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
 
-graphshiny1_bis <- ggplot(df7_long, aes(x=Annee,y= value, color=pays)) +
+colonnes7 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+df_7_long_bis <- df_7 %>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
+
+graphshiny1_bis <- ggplot(df_7_long_bis, aes(x=Annee,y= value, color=pays)) +
   scale_color_manual(values = c("black", "orange","brown","blue","green"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
   labs(title="Evolution comparée des consommations primaires \n  des principales sources d'énergie en France", x="Année", y="Valeur(en millions de tonnes d'équivalent CO2)")+
   geom_line()+
@@ -398,6 +400,19 @@ graph16c <- ggplot(data=fortify(merge(z1$Nuclear,z1$Gas),melt=TRUE)) +
 
 #2.¨Production
 
+#Sans Zoo (pr Shiny)
+
+df_8 <- df_8[,-c(7:12)]
+
+colnames(df_8)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+
+colonnes8 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+
+df_8_long_bis <- df_8 %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>% 
+  filter(Annee %in% c(1980:2016))
+
+#Avec
+
 graph17a <- ggplot(data=fortify(merge(z4$Oil,z4$Nuclear),melt=TRUE)) + 
   geom_line(aes (x=Index, y =as.numeric(Value), color=Series))+
   scale_color_manual(values = c("black", "orange"),labels = c("Pétrole","Nucléaire"))+
@@ -480,9 +495,20 @@ graph19c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) +
   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
 
 
-#Conclusion générale : les mix énergétique de la consommation et de la production sont très différents.
+#Conclusion générale : les mix énergétiques de la consommation et de la production sont très différents.
 #Par exemple, le nucléaire représente une plus grande part de la prod que de la conso, pour les énergies fossiles c'est plutôt l'inverse.
 
+
+#Différence production-consommation des différentes sources d'énergie
+
+df_9_long_bis <- df_7_long_bis %>% left_join(df_8_long_bis, by =c("Annee","source"), copy=FALSE)%>%
+                 rename(consommation = value.x , production=value.y)%>%
+                 mutate(desequilibre = consommation - production)%>%
+                 filter(desequilibre != 0.0)
+
+
+#On remarque que pour le nucléaire et l'hydroélectricité, il y a équilibre entre conso et prod, donc on ne les représente pas
+#sur la figure des déséquilibres.
 
 
 #Astuces supplémentaires

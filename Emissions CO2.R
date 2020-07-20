@@ -24,9 +24,11 @@ colonnes1 <- c("France","Europe","Allemagne")
 df1_long <- df1 %>% pivot_longer(colonnes1, names_to = 'pays', values_to = "value")
 
 #Pour la comparaison des distributions, on va supprimer l'Europe.
-df1_fr_all <- df1 [,-3]
+df1_fr_all <- df1[,-3]
 colonnes2 <- c("France","Allemagne")
-df1_fr_all_long <- df1 %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
+df1_fr_all_long <- df1_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
+                
+
 
 graph1 <- ggplot(df1_fr_all_long, aes(x=pays,y= value, color=pays)) +
   scale_color_manual(values = c("#E69F00","#56B4E9"),labels = c("Allemagne","France"))+
