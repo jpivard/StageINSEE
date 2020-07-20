@@ -11,38 +11,38 @@ library(dplyr)
 
 # La place de l'énergie nucléaire dans l'énergie produite (en millions de KwH): comparaison France-Allemagne
 
-df6 =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
+df_nucl =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
 
-df6 <- df6 [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
+df_nucl <-df_nucl [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
 
 #Pour supprimer les colonnes, on peut passer par la syntaxe tidyverse 
-df6 <- df6 %>% select(-'Unit')%>% select(-'Quantity Footnotes')
+df_nucl <- df_nucl %>% select(-'Unit')%>% select(-'Quantity Footnotes')
 
-colnames(df6)[1]<-"pays"
-colnames(df6)[2]<-"bien"
-colnames(df6)[3]<-"annee"
-colnames(df6)[4]<-"quantite_produite"
+colnames(df_nucl)[1]<-"pays"
+colnames(df_nucl)[2]<-"bien"
+colnames(df_nucl)[3]<-"annee"
+colnames(df_nucl)[4]<-"quantite_produite"
 
-df6 <- df6 %>% select(-'bien') 
+df_nucl<-df_nucl %>% select(-'bien') 
 
-df6_moy <- summarise(df6,moyenne=mean(quantite_produite))
+df6_moy <- summarise(df_nucl,moyenne=mean(quantite_produite))
 #Quantité de production moyenne (deux pays confondus) : 276820.6 millions de KwH
 
-df6_group_moy <-  df6 %>% group_by(pays) %>% summarise(moyenne=mean(quantite_produite))
+df6_group_moy <-  df_nucl %>% group_by(pays) %>% summarise(moyenne=mean(quantite_produite))
 #Quantités de production moyennes par pays :
 #	France	407597.4
 # Germany	141200.3
 #Il y a donc une nette avance de la France en termes de production d'énergie nucléaire.
 
 
-hist(df6$quantite_produite, col="yellow", main="Production d'énergie nucléaire en France et en Allemagne")
+hist(df_nucl$quantite_produite, col="yellow", main="Production d'énergie nucléaire en France et en Allemagne")
 #L'histogramme montre clairement deux groupes distincts de valeur : à gauche, les valeurs basses correspondent à l'Allemagne,
 #à droite les valeurs plus élevées correspondent à la France.
 
 
 #Représentation graphique des évolutions de la production dans les deux pays
 
-graph9 <- ggplot(data = df6 ) + geom_line(aes (x=annee, y =quantite_produite, color=pays))+
+graph9 <- ggplot(data = df_nucl) + geom_line(aes (x=annee, y =quantite_produite, color=pays))+
   scale_color_manual(values = c("#56B4E9","#E69F00"),labels = c("France","Allemagne"))+
   labs(title="Evolution comparée de la production \n d'énergie nucléaire en France et en Allemagne",x="Année", y="Quantité produite(en millions de KwH)")+
   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
@@ -52,7 +52,7 @@ graph9 <- ggplot(data = df6 ) + geom_line(aes (x=annee, y =quantite_produite, co
 
 
 #On peut regarder l'évolution dans les deux pays sur une période plus réduite (après 2000 par exemple)
-df6_reduite <- df6 %>% filter(annee %in% c(2000:2017))
+df6_reduite <- df_nucl %>% filter(annee %in% c(2000:2017))
 
 
 graph10 <- ggplot(data = df6_reduite ) + geom_line(aes (x=annee, y =quantite_produite, color=pays))+
@@ -66,7 +66,7 @@ graph10 <- ggplot(data = df6_reduite ) + geom_line(aes (x=annee, y =quantite_pro
 #On peut aussi visualiser les données d'autres manières
 
 
-graph11<- ggplot(df6, aes(x=annee, y=quantite_produite, fill=pays))+
+graph11<- ggplot(df_nucl, aes(x=annee, y=quantite_produite, fill=pays))+
 geom_bar(width = 1, stat = "identity")+
 scale_fill_manual(values = c("#56B4E9","#E69F00"),labels = c("France","Allemagne"))+
 labs(title="Evolution comparée de la production \n d'énergie nucléaire en France et en Allemagne",x="Année", y="Quantité produite(en millions de KwH)")+

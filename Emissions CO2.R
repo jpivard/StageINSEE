@@ -65,7 +65,7 @@ graph2b <- ggplot(df1_long_reduite, aes(x=Annee,y= value, color=pays)) +
 #II. Emissions par secteurs en France
 
 
-df2 = read_tsv(file = "données/Emissions par secteurs Rapport Secten (en Mt).csv")
+df2 = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
 
 #On ne retient que les principaux secteurs émetteurs
 df2 <- df2[,-c(2:4)]
@@ -109,7 +109,7 @@ graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
 
 df3 = read_csv(file='~/données/Emissions intensity of GDP data.csv')
 
-df4 = read_csv(file='données/Emissions intensity of primary energy data.csv')
+df4 = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
 
 #1.PIB
 

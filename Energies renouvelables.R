@@ -28,7 +28,7 @@ ggplot(data = df_1 ) + aes (x=annee, y=consommation_finale_energies_renouvelable
 #Ce graphique met en évidence une tendance à la baisse au cours des années 90, puis à la hausse depuis 2005 (avec quelques décrochages ponctuels).
 
 
-df_2 = read.csv(file='données/Energie/Consommation_finale_energie_fossile_France.csv')
+df_2 = read.csv(file='~/données/Consommation_finale_energie_fossile_France.csv')
 
 colnames(df_2 )[1] <- 'annee'
 colnames(df_2 )[2] <- 'consommation_finale_energies_fossiles_fr'
@@ -114,6 +114,11 @@ df_6 <- df_1 %>% left_join(df_5, by ="annee", copy=FALSE) %>% left_join(df_4, by
 col_2 <- c("France", "Allemagne","UE")
 df_6_long <- df_6 %>% pivot_longer(col_2, names_to = "consommation_finale_energies_renouvelables", values_to = "value") 
 
+col_2_bis <- c("France", "Allemagne")
+df_6_long <- df_6 %>% pivot_longer(col_2_bis, names_to = "consommation_finale_energies_renouvelables", values_to = "value")
+df_6_long <-select(df_6_long,-UE)
+
+
 graph5 <- ggplot(df_6_long, aes(x=consommation_finale_energies_renouvelables,y=value, color=consommation_finale_energies_renouvelables)) +
   scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
   geom_boxplot()+
@@ -134,6 +139,10 @@ colnames(df_7)[3] <- 'UE'
 
 colonnes_2<- c("France", "UE","Allemagne") 
 df_7_long <- df_7 %>% pivot_longer(colonnes_2, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
+
+colonnes_2_bis<- c("France","Allemagne") 
+df_7_long <- df_7 %>% pivot_longer(colonnes_2_bis, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
+df_7_long <-select(df_7_long,-UE)
 
 graph7 <- ggplot(df_7_long, aes(x=production_primaire_energies_renouvelables,y=value, color=production_primaire_energies_renouvelables)) +
   scale_color_manual(values = c("#E69F00", "#56B4E9","#009E73"),labels = c("Allemagne","France","UE"))+
@@ -174,7 +183,7 @@ df_9 = read_tsv(file='~/données/Renewable_Energy_Production_share_of_primary_en
 
 #On enlève le Royaume-Uni (pour des raisons pratiques)
 df_8 <- df_8[,-5]
-
+df_9 <- df_9[,-5]
 
 #Consommation
 
