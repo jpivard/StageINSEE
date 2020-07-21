@@ -405,8 +405,7 @@ server <-  function(input, output, session) {
     
     ## I. Main dashboard -----------------------------
     
-    # 1. Value boxes (cases rouges et vertes) : Facultatif mais voir si on en a besoin pour les courbes (a priori non)  ---------------------------------------------------------
-    
+    # 1. Value boxes (cases rouges et vertes) 
     tmp_ex_g <-
         dtf_shiny_full %>%
         filter( Country == 'World',
