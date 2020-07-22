@@ -1,29 +1,20 @@
 
-required_packages <- c(
-    "checkpoint",
-    "shinydashboard"
-)
 
-# install missing packages
-
-new.packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
-
-if (length(new.packages)) {
-    install.packages(new.packages)
-}
-
-rm(new.packages)
-
-library(checkpoint)
-checkpoint(snapshotDate ='2019-12-17')
 library(shiny)
-library(shinydashboard)
+library(highcharter)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(plotly)
+
 
 # Define UI for application 
 ui <- fluidPage(
     # dashboardHeader(title = "Un aperçu de la finance verte et des investissements pour le climat en France"),
     
     titlePanel("Un aperçu de la finance verte et des investissements pour le climat en France"),
+    
+    
     mainPanel(
         
         # dashboardSidebar(),
@@ -64,18 +55,29 @@ ui <- fluidPage(
           h3(paste0("Financements par financeurs"),align = 'center'),
      
      
-     
           h3(paste0("Répartition mondiale des obligations vertes par émetteurs"),align = 'center'),
+     
+             img(src = "Figure répartition obligations vertes par émetteurs.png", height = 140, width = 400),
+     
      
           h3(paste0("Répartition géographique du marché des fonds verts"),align = 'center'),
      
+             img(src = "Figure répartition  géographique marché fonds verts.png", height = 140, width = 400),
+     
+     
           h3(paste0("Evolution des encours de fonds verts"),align = 'center'),
+     
+             img(src = "Figure évolution des encours de fonds verts.png", height = 140, width = 400),
+     
      
           h3(paste0("Evolution des encours par types de fonds"),align = 'center'),
      
+             img(src = "Figure évolution des encours par types de fonds.png", height = 140, width = 400),
+     
+     
           h3(paste0("Evolution du marché des fonds verts par adéquation"),align = 'center'),
      
-        
+             img(src = "Figure évolution du marché des fonds verts par adéquation.png", height = 140, width = 400),
      
                                    ) 
                           )
@@ -324,4 +326,5 @@ server <- function(input, output) {
 }
 
 # Run the application 
-shinyApp(ui = ui, server = server)
+# shinyApp(ui = ui, server = server)
+shiny::shinyApp(ui=ui,server=server)

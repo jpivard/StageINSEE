@@ -1,4 +1,19 @@
 
+# required_packages <- c(
+#   "highcharter",
+#   "shinydashboard",
+#   "plotly"
+# )
+# 
+# # install missing packages
+# 
+# new.packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
+# 
+# if (length(new.packages)) {
+#   install.packages(new.packages)
+# }
+# 
+# rm(new.packages)
 
 # install.packages("highcharter")
 # install.packages("plotly")
@@ -265,8 +280,10 @@ server <- function(input, output) {
     
     #Figure comparant la production nucléaire en France et en Allemagne
     
+    
     output$nucl_plot <- renderPlotly({
-        dfshiny10 <- df_nucl
+        dfshiny10 <- df_nucl%>% 
+          filter(annee %in% c(1991:2017))
         nucl_plot <- ggplot(dfshiny10, aes(x=annee, y=quantite_produite, fill=pays))+
             geom_bar(width = 1, stat = "identity")+
             scale_fill_manual(values = c("#56B4E9","#E69F00"),labels = c("France","Allemagne"))+
