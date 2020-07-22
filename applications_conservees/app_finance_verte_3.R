@@ -53,6 +53,10 @@ ui <- fluidPage(
      h2(paste0("Quelques données sur la finance verte"),align = 'center') ,  
      
           h3(paste0("Financements par financeurs"),align = 'center'),
+          fluidRow(column( width = 12,h4("Financements historiques(2016-2018)", align = 'center'), plotlyOutput('financeurs_plot_4')),
+          fluidRow(column( width = 12,h4("Financements à court terme (jusque 2023)", align = 'center'), plotlyOutput('financeurs_plot_5')),
+          fluidRow(column( width = 12,h4("Financements à moyen terme (2024-2028)", align = 'center'), plotlyOutput('financeurs_plot_6'))
+                       ),
      
      
           h3(paste0("Répartition mondiale des obligations vertes par émetteurs"),align = 'center'),
@@ -90,7 +94,9 @@ ui <- fluidPage(
     
 )
        
+)
 
+)
 
 # Define server logic 
 server <- function(input, output) {
@@ -322,6 +328,35 @@ server <- function(input, output) {
         
     })
     
+    
+    dffin <- dfinv_3 
+    
+    output$financeurs_plot_4<- renderPlotly({
+        financeurs_plot_4 <- ggplot(dffin, aes(x=Financeurs,y=Financements_historiques)) +
+            geom_bar(aes (x=Financeurs, y =Financements_historiques, fill=Financeurs),stat = "identity", position = "stack")+
+            scale_fill_manual(values = c("grey","green","brown","orange","blue","pink", "purple", "black", "red","yellow"),labels = c("Fonds_européens","Etat_et_agences","Collectivites_territoriales","Bailleurs_sociaux","Gestionnaires_infrastructures","Banques_publiques", "Banques_commerciales","Marches_financiers", "Entreprises","Menages"))+
+            labs(x="Financeur",y="milliards d'euros")
+        
+    })
+    
+
+    
+    output$financeurs_plot_5<- renderPlotly({
+        financeurs_plot_5 <- ggplot(dffin, aes(x=Financeurs,y=Financements_court_terme)) +
+            geom_bar(aes (x=Financeurs, y =Financements_court_terme, fill=Financeurs),stat = "identity", position = "stack")+
+            scale_fill_manual(values = c("grey","green","brown","orange","blue","pink", "purple", "black", "red","yellow"),labels = c("Fonds_européens","Etat_et_agences","Collectivites_territoriales","Bailleurs_sociaux","Gestionnaires_infrastructures","Banques_publiques", "Banques_commerciales","Marches_financiers", "Entreprises","Menages"))+
+            labs(x="Financeur",y="milliards d'euros")
+        
+    })
+    
+    
+    output$financeurs_plot_6<- renderPlotly({
+        financeurs_plot_6 <- ggplot(dffin, aes(x=Financeurs,y=Financements_moyen_terme)) +
+            geom_bar(aes (x=Financeurs, y =Financements_moyen_terme, fill=Financeurs),stat = "identity", position = "stack")+
+            scale_fill_manual(values = c("grey","green","brown","orange","blue","pink", "purple", "black", "red","yellow"),labels = c("Fonds_européens","Etat_et_agences","Collectivites_territoriales","Bailleurs_sociaux","Gestionnaires_infrastructures","Banques_publiques", "Banques_commerciales","Marches_financiers", "Entreprises","Menages"))+
+            labs(x="Financeur",y="milliards d'euros")
+        
+    })
     
 }
 
