@@ -27,7 +27,7 @@ ui <-  dashboardPage(
             menuItem("L'énergie en France", tabName = "energie", icon = icon("list-ol")),
             menuItem("Investissements climat", tabName = "investissements", icon = icon("dashboard")),
             menuItem("Finance verte", tabName = "fin_verte", icon = icon("list-ol")),
-            menuItem("Données et autres informations", tabName="infos", icon = icon("database")),
+            menuItem("Sources et autres informations", tabName="infos", icon = icon("database")),
             menuItem("Les ingrédients de cette appli", icon = icon("github"), href = "https://github.com/jpivard/StageINSEE")
         )
     ),
@@ -116,9 +116,9 @@ ui <-  dashboardPage(
                 tabBox(
                     title = "Energies renouvelables",
                     width = 8,
-                    tabPanel(title = "Consommation d'énergies renouvelables (en niveau)",plotlyOutput('conso_ER_Fr_All_plot')),
+                    tabPanel(title = "Consommation d'énergies renouvelables (en valeur)",plotlyOutput('conso_ER_Fr_All_plot')),
                     tabPanel(title = "Consommation d'énergies renouvelables (en proportion de l'énergie consommée totale)",plotlyOutput('part_conso_ER_plot')),
-                    tabPanel(title = "Production d'énergies renouvelables (en niveau)",plotlyOutput('prod_ER_Fr_All_plot')),
+                    tabPanel(title = "Production d'énergies renouvelables (en valeur)",plotlyOutput('prod_ER_Fr_All_plot')),
                     tabPanel(title = "Production d'énergies renouvelables (en proportion de l'énergie produite totale)", plotlyOutput('part_prod_ER_plot'))
                 ),
                 
@@ -141,7 +141,7 @@ ui <-  dashboardPage(
                 
                 valueBox(
                     value = "6,741 milliards",
-                    subtitle = "Dépenses d'investissements dans les énergies renouvelables (en milliards)",
+                    subtitle = "Dépenses d'investissements dans les énergies renouvelables",
                     icon = icon("euro"),
                     color = "green",
                     width = 4
@@ -174,10 +174,22 @@ ui <-  dashboardPage(
                 ),
                 
                 
-            ),   
+            ),
             
             tabItem(
                 "fin_verte",
+                
+                
+                
+                tabBox(
+                    title = "Financements par financeurs",
+                    width = 12,
+                    tabPanel(title = "Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
+                    tabPanel(title = "Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
+                    tabPanel(title = "Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
+                ),
+                
+                
                 
                 
                 infoBox(  
@@ -210,15 +222,74 @@ ui <-  dashboardPage(
                     width = 4
                 ),
                 
-                
-                
-                tabBox(
-                    title = "Financements par financeurs",
-                    width = 12,
-                    tabPanel(title = "Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
-                    tabPanel(title = "Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
-                    tabPanel(title = "Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
+                infoBox(  
+                    title = "Proportion d'obligations vertes",
+                    value = "Moins d'1%",
+                    subtitle = "des obligations mondiales en 2016",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
                 ),
+            
+                
+                 infoBox(  
+                    title = "Proportion de prêts verts",
+                    value = "Entre 5 et 10%",
+                    subtitle = "des prêts bancaires mondiaux en 2016",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
+                ),
+                
+                infoBox(  
+                    title = "Participation dans des actifs d'infrastructure verte",
+                    value = "Moins d'1%",
+                    subtitle = "des participations d'investisseurs institutionnels mondiaux en 2016",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
+                ),
+                
+                infoBox(  
+                    title = "Principal domaine d'investissement vert cité",
+                    value = "Energies renouvelables, 75%",
+                    subtitle = "des fonds européens du panel étudié par Novethic en 2016",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
+                ),
+                
+                
+                infoBox(  
+                    title = "Encours total des fonds verts français",
+                    value = "4,6 milliards d'euros",
+                    subtitle = "Soit 20% des fonds européenns du panel étudié par Novethic en 2016",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
+                ),
+                
+                
+                infoBox(  
+                    title = "Fonds durables au 31 décembre 2019",
+                    value = "208 milliards d'euros",
+                    subtitle = "Montant de l'encours mondial selon Novethic",
+                    icon = icon("line-chart"),
+                    fill = TRUE,
+                    color = "green",
+                    width = 4
+                ),
+                
+                
+                
+                
+                
+            
                 
                 h3(paste0("Répartition mondiale des obligations vertes par émetteurs"),align = 'center'),
                 img(src = "Figure répartition obligations vertes par émetteurs.png", height = 400, width = 400),
@@ -238,6 +309,10 @@ ui <-  dashboardPage(
                 
                 h3(paste0("Evolution du marché des fonds verts par adéquation"),align = 'center'),
                 img(src = "Figure évolution du marché des fonds verts par adéquation.png", height = 400, width = 400),
+                
+        
+                
+                
                 
                
                  tabItem(
