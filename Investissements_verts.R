@@ -33,7 +33,7 @@ dfinv_2 = read_tsv(file='~/données/Investissements par secteur I4CE.csv')
 
 colnames(dfinv_2)[2] <- 'Montant_financement_public_annuel_actuel'
 colnames(dfinv_2)[3] <- 'Nouvel_objectif_annuel'
-colnames(dfinv_2)[4] <- 'Investissement_supplementaire_annuel_genere_espere'
+colnames(dfinv_2)[4] <- 'Investissement_supplementaire_annuel_genere_attendu'
 
 
 #III.Principaux investisseurs par types de financements
