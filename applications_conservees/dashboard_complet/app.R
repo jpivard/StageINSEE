@@ -1,6 +1,4 @@
-
-
-#Chargement des packages
+#####Chargement des packages #################
 
 library(shiny)
 library(highcharter)
@@ -11,10 +9,213 @@ library(plotly)
 library(shinydashboard)
 
 
+###### Traitement des données #################
+
+# ------ 1. CO2 ---------------------
+
+#Emissions globales
+df_CO2= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
+
+colnames(df_CO2)[1]<- 'Annee'
+colnames(df_CO2)[4]<- 'Allemagne'
+
+df_CO2_fr_all <- df_CO2[,-3]
+colonnes2 <- c("France","Allemagne")
+df_CO2_fr_all_long<- df_CO2_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
+
+
+#Emissions par secteurs
+df_secteurs = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
+
+#On ne retient que les principaux secteurs émetteurs
+df_secteurs <- df_secteurs[,-c(2:4)]
+df_secteurs <- df_secteurs[,-5]
+df_secteurs <- df_secteurs[,-6]
+
+colnames(df_secteurs)[2] <- "Energie"
+colnames(df_secteurs)[3] <- "Ind_manuf"
+colnames(df_secteurs)[4] <- "Residentiel_Tertiaire"
+
+colonnes3 = c("Energie","Ind_manuf", "Residentiel_Tertiaire", "Transports")
+df_secteurs_long <- df_secteurs %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
+
+
+#Intensité carbone du PIB
+df_intensite_PIB = read_csv(file='~/données/Emissions intensity of GDP data.csv')
+
+df_intensite_PIB_past <- df_intensite_PIB[-c(83:90),] 
+df_intensite_PIB_past <- df_intensite_PIB_past[-28,]
+#On retire les colonnes correspondant à des prévisions et la donnée supplémentaire pour l'UE (on prend la dernière pour simplifier)
+
+df_intensite_PIB_past$year<- c(rep(seq(1990,2016),3))
+
+#On supprime les colonnes inutiles et on renomme les colonnes restantes
+
+df_intensite_PIB_past <- df_intensite_PIB_past[,-c(1:2)]
+df_intensite_PIB_past <- df_intensite_PIB_past[,-2]
+df_intensite_PIB_past <- df_intensite_PIB_past[,-3]
+
+colnames(df_intensite_PIB_past)[1] <- 'pays'
+colnames(df_intensite_PIB_past)[2] <- 'valeur'
+colnames(df_intensite_PIB_past)[3] <- 'annee'
+
+
+#Intensité carbone de l'énergie
+df_intensite_energie = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
+
+df_intensite_energie_past <- df_intensite_energie[-c(81:86),] 
+df_intensite_energie_past <- df_intensite_energie_past[-80,] 
+df_intensite_energie_past <- df_intensite_energie_past[-53,] 
+#On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
+
+df_intensite_energie_past$year<- c(rep(seq(1990,2015),3))
+
+#On supprime les colonnes inutiles et on renomme les colonnes restantes
+
+df_intensite_energie_past <- df_intensite_energie_past[,-c(1:2)]
+df_intensite_energie_past <- df_intensite_energie_past[,-2]
+df_intensite_energie_past <- df_intensite_energie_past[,-3]
+
+colnames(df_intensite_energie_past)[1] <- 'pays'
+colnames(df_intensite_energie_past)[2] <- 'valeur'
+colnames(df_intensite_energie_past)[3] <- 'annee'
+
+
+#Décomposition comptable des émissions de CO2
+
+df_Kaya = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
+
+colnames(df_Kaya)[2]<- 'Contenu CO2 energie'
+colnames(df_Kaya)[3]<- 'Intensite_energetique_PIB'
+colnames(df_Kaya)[4]<- 'PIB par tete'
 
 
 
-# Define UI for application 
+
+
+# ------ 2.Energie ----------------------
+
+#Consommation et production par sources
+
+df_conso_energie_source_fr <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+df_conso_energie_source_fr <- df_conso_energie_source_fr[,-c(7:12)]
+
+colnames(df_conso_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+
+colonnes7 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+df_conso_energie_source_fr_long <- df_conso_energie_source_fr%>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
+
+
+df_prod_energie_source_fr <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+df_prod_energie_source_fr <- df_prod_energie_source_fr[,-c(7:12)]
+
+colnames(df_prod_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+
+colonnes8 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+
+df_prod_energie_source_fr_long <- df_prod_energie_source_fr %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>% 
+    filter(Annee %in% c(1980:2016))
+
+
+#Différence production-consommation des différentes sources d'énergie
+
+df_deseq_conso_prod <- df_conso_energie_source_fr_long %>% left_join(df_prod_energie_source_fr_long, by =c("Annee","source"), copy=FALSE)%>%
+    rename(consommation = value.x , production=value.y)%>%
+    mutate(desequilibre = consommation - production)%>%
+    filter(desequilibre != 0.0)
+
+
+#Energie nucléaire
+
+df_nucl =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
+
+df_nucl <-df_nucl [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
+df_nucl <- df_nucl %>% select(-'Unit')%>% select(-'Quantity Footnotes')
+
+colnames(df_nucl)[1]<-"pays"
+colnames(df_nucl)[2]<-"bien"
+colnames(df_nucl)[3]<-"annee"
+colnames(df_nucl)[4]<-"quantite_produite"
+
+df_nucl<-df_nucl %>% select(-'bien') 
+
+
+#Energies renouvelables
+
+#Données en valeur
+
+df_conso_enr_fr =read.csv(file='~/données/Consommation_finale_energies_renouvelables_France.csv')
+
+colnames(df_conso_enr_fr )[1] <- 'annee'
+colnames(df_conso_enr_fr )[2] <- 'consommation_finale_energies_renouvelables_fr'
+
+df_conso_enr_all = read.csv(file='~/données/conso_finale_energies_renouvelables_all.csv')
+
+colnames(df_conso_enr_all)[1] <- 'annee'
+colnames(df_conso_enr_all)[2] <- 'consommation_finale_energies_renouvelables_All'
+
+df_conso_enr_fr_all <- df_conso_enr_fr %>% left_join(df_conso_enr_all, by ="annee", copy=FALSE) 
+
+colnames(df_conso_enr_fr_all)[2] <- 'France'
+colnames(df_conso_enr_fr_all)[3] <- 'Allemagne'
+
+col_2_bis <- c("France", "Allemagne")
+df_conso_enr_fr_all_long <- df_conso_enr_fr_all %>% pivot_longer(col_2_bis, names_to = "consommation_finale_energies_renouvelables", values_to = "value")
+
+
+df_prod_enr =read.csv(file='~/données/Production_primaire_energies_renouvelables.csv')
+
+colnames(df_prod_enr)[1] <- 'annee'
+colnames(df_prod_enr)[2] <- 'France'
+colnames(df_prod_enr)[4] <- 'Allemagne'
+colnames(df_prod_enr)[3] <- 'UE' 
+
+colonnes_2<- c("France", "UE","Allemagne") 
+df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
+
+colonnes_2_bis<- c("France","Allemagne") 
+df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2_bis, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
+df_prod_enr_long  <-select(df_prod_enr_long ,-UE)
+
+
+#Données en proportion
+
+df_part_enr_conso =  read_tsv(file='~/données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
+df_part_enr_prod = read_tsv(file='~/données/Renewable_Energy_Production_share_of_primary_energy.csv')
+
+df_part_enr_conso <- df_part_enr_conso[,-5]
+df_part_enr_prod <- df_part_enr_prod[,-5]
+
+colonnes_3<- c("France", "Allemagne","Italie","UE") 
+df_part_enr_conso_long <- df_part_enr_conso %>% pivot_longer(colonnes_3, names_to = "pays", values_to = "part_energies_renouvelables_conso_primaire") 
+
+colonnes_4<- c("France", "Allemagne","Italie","UE") 
+df_part_enr_prod_long <- df_part_enr_prod %>% pivot_longer(colonnes_4, names_to = "pays", values_to = "part_energies_renouvelables_prod_primaire") 
+
+
+# -------- 3.Investissements climat ----------------------
+
+dfinv_2 = read_tsv(file='~/données/Investissements par secteur I4CE.csv')
+
+colnames(dfinv_2)[2] <- 'Montant_financement_public_annuel_actuel'
+colnames(dfinv_2)[3] <- 'Nouvel_objectif_annuel'
+colnames(dfinv_2)[4] <- 'Investissement_supplementaire_annuel_genere_attendu'
+
+dfinv_3 = read_tsv(file = '~/données/Investissements Plan I4CE.csv')
+
+colnames(dfinv_3)[2] <- 'Investissements_historiques_2016_2018'
+colnames(dfinv_3)[3] <- 'Investissements_court_terme'
+colnames(dfinv_3)[4] <- 'Investissements_moyen_terme'
+
+
+# -------- 4.Finance verte -------------------------------
+
+#Utilise les données du tableau précédent.
+
+
+
+##### Définition de l'interface utilisateur ####################
+
 ui <-  dashboardPage(
     
     
@@ -24,6 +225,7 @@ ui <-  dashboardPage(
         titleWidth = 800
         
     ),
+    
     
     dashboardSidebar(
         sidebarMenu(
@@ -235,9 +437,9 @@ ui <-  dashboardPage(
                     color = "green",
                     width = 4
                 ),
-            
                 
-                 infoBox(  
+                
+                infoBox(  
                     title = "Proportion de prêts verts",
                     value = "Entre 5 et 10%",
                     subtitle = "des prêts bancaires mondiaux en 2016",
@@ -293,7 +495,7 @@ ui <-  dashboardPage(
                 
                 
                 
-            
+                
                 
                 h3(paste0("Répartition mondiale des obligations vertes par émetteurs"),align = 'center'),
                 img(src = "Figure répartition obligations vertes par émetteurs.png", height = 400, width = 400),
@@ -314,20 +516,20 @@ ui <-  dashboardPage(
                 h3(paste0("Evolution du marché des fonds verts par adéquation"),align = 'center'),
                 img(src = "Figure évolution du marché des fonds verts par adéquation.png", height = 400, width = 400),
                 
-        
                 
                 
                 
-               
-                 tabItem(
+                
+                
+                tabItem(
                     "infos",
                     
                     #Ici : ajouter les sources des bases de données
                     #Ainsi que quelques explications/définitions si besoin
                     #Et mettre le lien vers le document Overleaf
                     
-                
-                 )
+                    
+                )
                 
                 
             )
@@ -344,14 +546,15 @@ ui <-  dashboardPage(
 
 
 
-# Define server logic 
+######### Définition de la logique du serveur #######
+
 server <- function(input, output) {
     
-    #1. CO2
+    # ------- 1. Emissions de CO2 -------------------
     
     #Courbe sur les émissions globales
     
-    dfshiny1<- df1_fr_all  %>% 
+    dfshiny1<- df_CO2_fr_all  %>% 
         filter(Annee %in% c(1980:2016))
     
     output$courbe_emissions <-renderHighchart({
@@ -376,93 +579,6 @@ server <- function(input, output) {
             hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
         
     })
-    
-    
-    #Figure sur la répartition des émissions par secteurs
-    
-    dfshiny2 <- df2_long
-    
-    output$emissions_secteurs <- renderPlotly({
-        
-        if(input$secteur == "Tous les secteurs"){
-            data = dfshiny2
-        } else {
-            data = dfshiny2 %>%
-                filter(secteur== input$secteur)%>%
-                group_by(Annee)
-        }
-        
-        emissions_secteurs <- ggplot(data, aes(x=Annee,y= value)) +
-            geom_bar(aes (x=Annee, y =value, fill=secteur),stat = "identity", position = "stack")+
-            scale_fill_manual(values = c("green","brown","orange","blue"),labels = c("Industrie de l'energie","Industrie manufacturiere et construction", "Residentiel et Tertiaire", "Transports"))+
-            labs(x="Année",y="Mtoe")+
-            theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
-            guides(fill=guide_legend(nrow=2,byrow=TRUE))
-        
-        
-    })
-    
-    #Courbe sur l'intensité carbone du PIB
-    
-    dfshiny3 <- df3_past %>% mutate(annee=rep(seq(1990,2016),3))%>%
-        pivot_wider(names_from =pays, values_from =valeur)
-    
-    output$courbe_intensite_carbone <-renderHighchart({
-        highchart() %>%
-            hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
-            hc_chart(type = 'line') %>%
-            hc_series( list(name = 'France', data =dfshiny3$FR, color='blue', marker = list(symbol = 'circle')),
-                       list(name = 'Allemagne', data =dfshiny3$DE, color = 'red', marker = list(symbol = 'circle')),
-                       list(name = 'Union Européenne', data =dfshiny3$EU, color = 'green', marker = list(symbol = 'circle') )  )  %>%
-            hc_xAxis( categories = unique(dfshiny3$annee) ) %>%
-            hc_yAxis( title = list(text = "en tonnes d'équivalent CO2 par dollar")  ) %>%
-            hc_plotOptions(column = list(
-                dataLabels = list(enabled = F),
-                #stacking = "normal",
-                enableMouseTracking = T ) 
-            )%>%
-            hc_tooltip(table = TRUE,
-                       sort = TRUE,
-                       pointFormat = paste0( '<br> <span style="color:{point.color}">\u25CF</span>',
-                                             " {series.name}: {point.y} tCO2eq/$"),
-                       headerFormat = '<span style="font-size: 13px">Année {point.key}</span>'
-            ) %>%
-            hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
-        
-    })
-    
-    #Courbe sur l'intensité carbone de l'énergie
-    
-    dfshiny4 <- df4_past %>% mutate(annee=rep(seq(1990,2015),3))%>%
-        pivot_wider(names_from =pays, values_from =valeur)
-    
-    output$courbe_intensite_carbone_energie <-renderHighchart({
-        highchart() %>%
-            hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
-            hc_chart(type = 'line') %>%
-            hc_series( list(name = 'France', data =dfshiny4$FR, color='blue', marker = list(symbol = 'triangle')),
-                       list(name = 'Allemagne', data =dfshiny4$DE, color = 'red', marker = list(symbol = 'triangle')),
-                       list(name = 'Union Européenne', data =dfshiny4$EU, color = 'green', marker = list(symbol = 'triangle') )  )  %>%
-            hc_xAxis( categories = unique(dfshiny4$annee) ) %>%
-            hc_yAxis( title = list(text = "en tonnes de CO2 par terajoules")  ) %>%
-            hc_plotOptions(column = list(
-                dataLabels = list(enabled = F),
-                #stacking = "normal",
-                enableMouseTracking = T ) 
-            )%>%
-            hc_tooltip(table = TRUE,
-                       sort = TRUE,
-                       pointFormat = paste0( '<br> <span style="color:{point.color}">\u25CF</span>',
-                                             " {series.name}: {point.y} tCO2/TJ"),
-                       headerFormat = '<span style="font-size: 13px">Année {point.key}</span>'
-            ) %>%
-            hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
-        
-    })
-    
-    
-    
-    
     
     #Courbe sur la décomposition comptable des émissions de CO2
     
@@ -492,18 +608,103 @@ server <- function(input, output) {
             hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
         
     })
+   
+    
+    #Courbe sur l'intensité carbone du PIB
+    
+    dfshiny3 <- df_intensite_PIB_past %>% mutate(annee=rep(seq(1990,2016),3))%>%
+        pivot_wider(names_from =pays, values_from =valeur)
+    
+    output$courbe_intensite_carbone <-renderHighchart({
+        highchart() %>%
+            hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
+            hc_chart(type = 'line') %>%
+            hc_series( list(name = 'France', data =dfshiny3$FR, color='blue', marker = list(symbol = 'circle')),
+                       list(name = 'Allemagne', data =dfshiny3$DE, color = 'red', marker = list(symbol = 'circle')),
+                       list(name = 'Union Européenne', data =dfshiny3$EU, color = 'green', marker = list(symbol = 'circle') )  )  %>%
+            hc_xAxis( categories = unique(dfshiny3$annee) ) %>%
+            hc_yAxis( title = list(text = "en tonnes d'équivalent CO2 par dollar")  ) %>%
+            hc_plotOptions(column = list(
+                dataLabels = list(enabled = F),
+                #stacking = "normal",
+                enableMouseTracking = T ) 
+            )%>%
+            hc_tooltip(table = TRUE,
+                       sort = TRUE,
+                       pointFormat = paste0( '<br> <span style="color:{point.color}">\u25CF</span>',
+                                             " {series.name}: {point.y} tCO2eq/$"),
+                       headerFormat = '<span style="font-size: 13px">Année {point.key}</span>'
+            ) %>%
+            hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
+        
+    })
+    
+    #Courbe sur l'intensité carbone de l'énergie
+    
+    dfshiny4 <- df_intensite_energie_past %>% mutate(annee=rep(seq(1990,2015),3))%>%
+        pivot_wider(names_from =pays, values_from =valeur)
+    
+    output$courbe_intensite_carbone_energie <-renderHighchart({
+        highchart() %>%
+            hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
+            hc_chart(type = 'line') %>%
+            hc_series( list(name = 'France', data =dfshiny4$FR, color='blue', marker = list(symbol = 'triangle')),
+                       list(name = 'Allemagne', data =dfshiny4$DE, color = 'red', marker = list(symbol = 'triangle')),
+                       list(name = 'Union Européenne', data =dfshiny4$EU, color = 'green', marker = list(symbol = 'triangle') )  )  %>%
+            hc_xAxis( categories = unique(dfshiny4$annee) ) %>%
+            hc_yAxis( title = list(text = "en tonnes de CO2 par terajoules")  ) %>%
+            hc_plotOptions(column = list(
+                dataLabels = list(enabled = F),
+                #stacking = "normal",
+                enableMouseTracking = T ) 
+            )%>%
+            hc_tooltip(table = TRUE,
+                       sort = TRUE,
+                       pointFormat = paste0( '<br> <span style="color:{point.color}">\u25CF</span>',
+                                             " {series.name}: {point.y} tCO2/TJ"),
+                       headerFormat = '<span style="font-size: 13px">Année {point.key}</span>'
+            ) %>%
+            hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
+        
+    })
     
     
-    #2. Energies 
+    
+    
+    #Figure sur la répartition des émissions par secteurs
+    
+    dfshiny2 <- df_secteurs_long
+    
+    output$emissions_secteurs <- renderPlotly({
+        
+        if(input$secteur == "Tous les secteurs"){
+            data = dfshiny2
+        } else {
+            data = dfshiny2 %>%
+                filter(secteur== input$secteur)%>%
+                group_by(Annee)
+        }
+        
+        emissions_secteurs <- ggplot(data, aes(x=Annee,y= value)) +
+            geom_bar(aes (x=Annee, y =value, fill=secteur),stat = "identity", position = "stack")+
+            scale_fill_manual(values = c("green","brown","orange","blue"),labels = c("Industrie de l'energie","Industrie manufacturiere et construction", "Residentiel et Tertiaire", "Transports"))+
+            labs(x="Année",y="Mtoe")+
+            theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))+
+            guides(fill=guide_legend(nrow=2,byrow=TRUE))
+        
+        
+    })
+    
+    # ------- 2. L'énergie en France ------------------------------
     
     
     #Figures sur la répartition de la consommation et de la production d'énergie par sources en France
     
-    dfshiny6<- df_7_long_bis
+    dfshiny6<- df_conso_energie_source_fr_long 
     
-    dfshiny7<- df_8_long_bis
+    dfshiny7<- df_prod_energie_source_fr_long
     
-    #Conso
+    #Consommation
     
     donnees_sources_energie_conso <- reactive( {
         if (input$source == "Toutes") {
@@ -513,13 +714,11 @@ server <- function(input, output) {
             data_conso = dfshiny6 %>%
                 filter(source == input$source) %>%
                 group_by(Annee)
-
+            
         }
-       
+        
         
     })
-        
-
     
     output$conso_sources_energies_plot<- renderPlotly({
         conso_sources_energies_plot <- ggplot( donnees_sources_energie_conso(), aes(x=Annee,y=value, fill=source))+ 
@@ -532,7 +731,7 @@ server <- function(input, output) {
     })
     
     
-    #Prod
+    #Prodution
     
     donnees_sources_energie_prod <- reactive( {
         if (input$source == "Toutes") {
@@ -540,18 +739,18 @@ server <- function(input, output) {
             
         } else {
             
-                data_prod = dfshiny7 %>%
+            data_prod = dfshiny7 %>%
                 filter(source == input$source) %>%
                 group_by(Annee)
-
+            
         }
-       
+        
         
     })
     
     
     output$prod_sources_energies_plot<- renderPlotly({
-    
+        
         prod_sources_energies_plot <- ggplot(donnees_sources_energie_prod(), aes(x=Annee,y=value, fill=source))+ 
             geom_bar(stat = "identity", position = "stack")+
             scale_fill_manual(values = c("brown","blue","green","orange","black"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
@@ -562,17 +761,11 @@ server <- function(input, output) {
     })
     
     
-    #Déséquilibre conso/prod
+    #Déséquilibre consommation/production
     
-    #Différence production-consommation des différentes sources d'énergie
-    
-    df_9_long_bis <- df_7_long_bis %>% left_join(df_8_long_bis, by =c("Annee","source"), copy=FALSE)%>%
-        rename(consommation = value.x , production=value.y)%>%
-        mutate(desequilibre = consommation - production)%>%
-        filter(desequilibre != 0.0)
     
     output$deseq_sources_energies_plot<- renderPlotly({
-        dfshiny8<- df_9_long_bis
+        dfshiny8<-df_deseq_conso_prod
         deseq_sources_energies_plot <- ggplot(dfshiny8, aes(x=Annee,y=desequilibre, fill=source))+ 
             geom_bar(aes (x=Annee, y =desequilibre, fill=source),stat = "identity", position = "stack")+
             scale_fill_manual(values = c("brown","blue","black"),labels = c("Pétrole","Charbon","Gaz"))+
@@ -604,26 +797,13 @@ server <- function(input, output) {
     })
     
     
-    
-    
-    #Comparaison de la consommation et de la production d'ENR en France et en Allemagne ( à associer aux tableaux où on peut choisir les données observées)
+    #Comparaison de la consommation et de la production d'ENR en France et en Allemagne 
     
     
     #Consommation
     
-    # output$conso_ER_Fr_All_plot <- renderPlotly({
-    #     dfshiny9 <- df_6_long 
-    #     conso_ER_Fr_All_plot <- ggplot(dfshiny9, aes(x=consommation_finale_energies_renouvelables,y=value, color=consommation_finale_energies_renouvelables)) +
-    #         scale_color_manual(values = c("#E69F00", "#56B4E9"),labels = c("Allemagne","France"))+
-    #         geom_boxplot()+
-    #         labs(x="Pays", y="Valeur(en TEP)")+
-    #         theme_gray()
-    #     ggplotly(conso_ER_Fr_All_plot)
-    #     
-    # })
-    
     output$conso_ER_Fr_All_plot <- renderPlotly({
-        dfshiny10 <- df_6_long 
+        dfshiny10 <- df_conso_enr_fr_all_long
         conso_ER_Fr_All_plot <- ggplot(dfshiny10, aes(x=annee,y=value, color=consommation_finale_energies_renouvelables)) +
             scale_color_manual(values = c("#E69F00", "#56B4E9"),labels = c("Allemagne","France"))+
             geom_line()+
@@ -636,19 +816,8 @@ server <- function(input, output) {
     
     #Production
     
-    # output$prod_ER_Fr_All_plot <- renderPlotly({
-    #     dfshiny11 <- df_7_long
-    #     prod_ER_Fr_All_plot <- ggplot(dfshiny11, aes(x=production_primaire_energies_renouvelables,y=value, color=production_primaire_energies_renouvelables)) +
-    #         scale_color_manual(values = c("#E69F00", "#56B4E9"),labels = c("Allemagne","France"))+
-    #         geom_boxplot()+
-    #         labs(x="Pays", y="Valeur(en TEP)")+
-    #         theme_gray()
-    #     ggplotly(prod_ER_Fr_All_plot)
-    #     
-    # })
-    
     output$prod_ER_Fr_All_plot <- renderPlotly({
-        dfshiny11 <- df_7_long
+        dfshiny11 <- df_prod_enr_long
         prod_ER_Fr_All_plot <- ggplot(dfshiny11, aes(x=annee,y=value, color=production_primaire_energies_renouvelables)) +
             scale_color_manual(values = c("#E69F00", "#56B4E9"),labels = c("Allemagne","France"))+
             geom_line()+
@@ -662,7 +831,7 @@ server <- function(input, output) {
     #Figure comparant les parts des ENR dans la consommation en France et dans d'autres pays européens, et leur évolution
     
     output$part_conso_ER_plot <-  renderPlotly({
-        dfshiny12 <- df_8_long
+        dfshiny12 <- df_part_enr_conso_long
         part_conso_ER_plot <-  ggplot(dfshiny12, aes(x=Annee,y=part_energies_renouvelables_conso_primaire, color=pays),lwd=2) +
             scale_color_manual(values = c("#E69F00", "#56B4E9","red","#009E73"),labels = c("Allemagne","France","Italie","UE"))+
             geom_line()+
@@ -675,7 +844,7 @@ server <- function(input, output) {
     #Figure comparant les parts des ENR dans la production en France et dans d'autres pays européens, et leur évolution
     
     output$part_prod_ER_plot <-  renderPlotly({
-        dfshiny13 <- df_9_long
+        dfshiny13 <- df_part_enr_prod_long
         part_prod_ER_plot <-  ggplot(dfshiny13, aes(x=Annee,y=part_energies_renouvelables_prod_primaire, color=pays),lwd=2) +
             scale_color_manual(values = c("#E69F00", "#56B4E9","red","#009E73"),labels = c("Allemagne","France","Italie","UE"))+
             geom_line()+
@@ -685,7 +854,8 @@ server <- function(input, output) {
         
     })
     
-    #3.Finance verte
+    
+    # -------- 3.Investissments climat ------------------
     
     #Figures sur les investissements par secteurs 
     
@@ -819,8 +989,6 @@ server <- function(input, output) {
     
     #Données sur les investissements par financeurs
     
-    
-    
     dfinv_3_plot1 <- dfinv_3 %>% filter(!is.na(`Investissements_historiques_2016_2018`))
     
     output$financeurs_plot_1<- renderPlotly({
@@ -856,6 +1024,8 @@ server <- function(input, output) {
         
     })
     
+    
+    # --------- 4. Finance verte -----------------------
     
     dffin <- dfinv_3 
     

@@ -15,22 +15,22 @@ library(dplyr)
 
 #I. Emissions de CO2 globales de la France, et comparaison avec l'Allemagne et avec la tendance européenne
 
-df1= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
+df_CO2= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
 
-colnames(df1)[1]<- 'Annee'
-colnames(df1)[4]<- 'Allemagne'
+colnames(df_CO2)[1]<- 'Annee'
+colnames(df_CO2)[4]<- 'Allemagne'
 
 colonnes1 <- c("France","Europe","Allemagne")
-df1_long <- df1 %>% pivot_longer(colonnes1, names_to = 'pays', values_to = "value")
+df_CO2_long <- df_CO2 %>% pivot_longer(colonnes1, names_to = 'pays', values_to = "value")
 
 #Pour la comparaison des distributions, on va supprimer l'Europe.
-df1_fr_all <- df1[,-3]
+df_CO2_fr_all <- df_CO2[,-3]
 colonnes2 <- c("France","Allemagne")
-df1_fr_all_long <- df1_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
+df_CO2_fr_all_long<- df_CO2_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
                 
 
 
-graph1 <- ggplot(df1_fr_all_long, aes(x=pays,y= value, color=pays)) +
+graph1 <- ggplot(df_CO2_fr_all_long, aes(x=pays,y= value, color=pays)) +
   scale_color_manual(values = c("#E69F00","#56B4E9"),labels = c("Allemagne","France"))+
   labs(title="Distributions des émissions totales de CO2 \n  en France et en Allemagne ", x="Pays", y="Valeur(en millions de tonnes d'équivalent CO2)")+
   geom_boxplot()+
@@ -40,7 +40,7 @@ graph1 <- ggplot(df1_fr_all_long, aes(x=pays,y= value, color=pays)) +
 
 
 #Comparaison des tendances
-graph2a <- ggplot(df1_long, aes(x=Annee,y= value, color=pays)) +
+graph2a <- ggplot(df_CO2_fr_all_long, aes(x=Annee,y= value, color=pays)) +
   scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
   labs(title="Evolution des émissions totales de CO2 \n  en France, en Allemagne et dans l'UE ", x="Année", y="Valeur(en millions de tonnes d'équivalent CO2)")+
   geom_line()+
@@ -52,9 +52,9 @@ graph2a <- ggplot(df1_long, aes(x=Annee,y= value, color=pays)) +
 
 #On va regarder l'évolution sur les dernières années (depuis 1980 par exemple)
 
-df1_long_reduite <- df1_long %>% filter(Annee %in% c(1980:2016))
+df_CO2_fr_all_long_reduite <- df_CO2_fr_all_long %>% filter(Annee %in% c(1980:2016))
 
-graph2b <- ggplot(df1_long_reduite, aes(x=Annee,y= value, color=pays)) +
+graph2b <- ggplot(df_CO2_fr_all_long_reduite, aes(x=Annee,y= value, color=pays)) +
   scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
   labs(title="Evolution des émissions totales de CO2 \n  en France, en Allemagne et dans l'UE ", x="Année", y="Valeur(en millions de tonnes d'équivalent CO2)")+
   geom_line()+
@@ -67,23 +67,23 @@ graph2b <- ggplot(df1_long_reduite, aes(x=Annee,y= value, color=pays)) +
 #II. Emissions par secteurs en France
 
 
-df2 = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
+df_secteurs = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
 
 #On ne retient que les principaux secteurs émetteurs
-df2 <- df2[,-c(2:4)]
-df2 <- df2[,-5]
-df2 <- df2[,-6]
+df_secteurs <- df_secteurs[,-c(2:4)]
+df_secteurs <- df_secteurs[,-5]
+df_secteurs <- df_secteurs[,-6]
 
-colnames(df2)[2] <- "Energie"
-colnames(df2)[3] <- "Ind_manuf"
-colnames(df2)[4] <- "Residentiel_Tertiaire"
+colnames(df_secteurs)[2] <- "Energie"
+colnames(df_secteurs)[3] <- "Ind_manuf"
+colnames(df_secteurs)[4] <- "Residentiel_Tertiaire"
 
 colonnes3 = c("Energie","Ind_manuf", "Residentiel_Tertiaire", "Transports")
-df2_long <- df2 %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
+df_secteurs_long <- df_secteurs %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
 
 
 #Evolution
-graph3 <- ggplot(df2_long, aes(x=Annee,y= value, color=secteur)) +
+graph3 <- ggplot(df_secteurs_long, aes(x=Annee,y= value, color=secteur)) +
   scale_color_manual(values = c("blue","brown","orange","green"),labels = c("Industrie de l'energie","Industrie manufacturiere et construction", "Residentiel et Tertiaire", "Transports"))+
   labs(title="Evolution des émissions de CO2 \n  par secteurs en France ", x="Secteur", y="Valeur(en millions de tonnes de CO2)")+
   geom_line()+
@@ -93,7 +93,7 @@ graph3 <- ggplot(df2_long, aes(x=Annee,y= value, color=secteur)) +
 
 
 #Répartition
-graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
+graph4 <- ggplot(df_secteurs_long, aes(x=Annee,y= value)) +
   geom_bar(aes (x=Annee, y =value, fill=secteur),stat = "identity", position = "stack")+
   scale_fill_manual(values = c("blue","brown","orange","green"),labels = c("Industrie de l'energie","Industrie manufacturiere et construction", "Residentiel et Tertiaire", "Transports"))+
   labs(title="Répartition sectorielle des émissions \n  de CO2 en France",x="Année",y="Mtoe")+
@@ -109,31 +109,31 @@ graph4 <- ggplot(df2_long, aes(x=Annee,y= value)) +
 
 #III. Intensité carbone du PIB (en tonnes d'équivalent CO2 par dollar ) et de l'énergie
 
-df3 = read_csv(file='~/données/Emissions intensity of GDP data.csv')
+df_intensite_PIB = read_csv(file='~/données/Emissions intensity of GDP data.csv')
 
-df4 = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
+df_intensite_energie = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
 
 #1.PIB
 
-df3_past <- df3[-c(83:90),] 
-df3_past <- df3_past[-28,]
+df_intensite_PIB_past <- df_intensite_PIB[-c(83:90),] 
+df_intensite_PIB_past <- df_intensite_PIB_past[-28,]
 #On retire les colonnes correspondant à des prévisions et la donnée supplémentaire pour l'UE (on prend la dernière pour simplifier)
 
-df3_past$year<- c(rep(seq(1990,2016),3))
+df_intensite_PIB_past$year<- c(rep(seq(1990,2016),3))
                   
 #On supprime les colonnes inutiles et on renomme les colonnes restantes
 
-df3_past <- df3_past[,-c(1:2)]
-df3_past <- df3_past[,-2]
-df3_past <- df3_past[,-3]
+df_intensite_PIB_past <- df_intensite_PIB_past[,-c(1:2)]
+df_intensite_PIB_past <- df_intensite_PIB_past[,-2]
+df_intensite_PIB_past <- df_intensite_PIB_past[,-3]
 
-colnames(df3_past)[1] <- 'pays'
-colnames(df3_past)[2] <- 'valeur'
-colnames(df3_past)[3] <- 'annee'
+colnames(df_intensite_PIB_past)[1] <- 'pays'
+colnames(df_intensite_PIB_past)[2] <- 'valeur'
+colnames(df_intensite_PIB_past)[3] <- 'annee'
 
 #Evolution comparée des intensités en CO2 du PIB
 
-graph5 <- ggplot(df3_past, aes(x=annee,y= valeur, color=pays)) +
+graph5 <- ggplot(df_intensite_PIB_past, aes(x=annee,y= valeur, color=pays)) +
   scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
   labs(title="Evolution des intensités en émissions de CO2 \n  du PIB en France, en Allemagne et en Europe ", x="Secteur", y="Valeur(en tonnes d'équivalent CO2 par dollar)")+
   geom_line()+
@@ -143,7 +143,7 @@ graph5 <- ggplot(df3_past, aes(x=annee,y= valeur, color=pays)) +
 #Tendance globale à la baisse, qui peut s'expliquer soit par une réduction des émissions soit par une hausse du PIB plus rapide que celle des émissions, soit les deux à la fois (le plus plausible)
 #La France est nettement sous l'Allemagne et sous la moyenne européenne.
 
-graph6 <- ggplot(df3_past, aes(x=annee,y= valeur, fill=pays)) +
+graph6 <- ggplot(df_intensite_PIB_past, aes(x=annee,y= valeur, fill=pays)) +
   scale_fill_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
   labs(title="Evolution des intensités en émissions de CO2 \n  du PIB en France, en Allemagne et en Europe ", x="Secteur", y="Valeur(en tonnes d'équivalent CO2 par dollar)")+
   geom_area()+
@@ -154,26 +154,26 @@ graph6 <- ggplot(df3_past, aes(x=annee,y= valeur, fill=pays)) +
 
 #2.Intensité carbone de l'énergie primaire ( en tonnes de CO2 par TJ)
 
-df4_past <- df4[-c(81:86),] 
-df4_past <- df4_past[-80,] 
-df4_past <- df4_past[-53,] 
+df_intensite_energie_past <- df_intensite_energie[-c(81:86),] 
+df_intensite_energie_past <- df_intensite_energie_past[-80,] 
+df_intensite_energie_past <- df_intensite_energie_past[-53,] 
 #On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
 
-df4_past$year<- c(rep(seq(1990,2015),3))
+df_intensite_energie_past$year<- c(rep(seq(1990,2015),3))
 
 #On supprime les colonnes inutiles et on renomme les colonnes restantes
 
-df4_past <- df4_past[,-c(1:2)]
-df4_past <- df4_past[,-2]
-df4_past <- df4_past[,-3]
+df_intensite_energie_past <- df_intensite_energie_past[,-c(1:2)]
+df_intensite_energie_past <- df_intensite_energie_past[,-2]
+df_intensite_energie_past <- df_intensite_energie_past[,-3]
 
-colnames(df4_past)[1] <- 'pays'
-colnames(df4_past)[2] <- 'valeur'
-colnames(df4_past)[3] <- 'annee'
+colnames(df_intensite_energie_past)[1] <- 'pays'
+colnames(df_intensite_energie_past)[2] <- 'valeur'
+colnames(df_intensite_energie_past)[3] <- 'annee'
 
 #Evolution comparée des intensités en CO2 de l'énergie primaire
 
-graph7 <- ggplot(df4_past, aes(x=annee,y= valeur, color=pays)) +
+graph7 <- ggplot(df_intensite_energie_past, aes(x=annee,y= valeur, color=pays)) +
   scale_color_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
   labs(title="Evolution des intensités en émissions de CO2 \n  de l'énergie primaire en France, en Allemagne et en Europe ", x="Année", y="Valeur(en tonnes d'équivalent CO2 par térajoule)")+
   geom_line()+
@@ -182,7 +182,7 @@ graph7 <- ggplot(df4_past, aes(x=annee,y= valeur, color=pays)) +
 #Ce graphique confirme les deux tendances observées pour l'intensité carbone du PIB.
 
 
-# graph8 <- ggplot(df4_past, aes(x=annee,y= valeur)) +
+# graph8 <- ggplot(df_intensite_energie_past, aes(x=annee,y= valeur)) +
 #   geom_bar(aes (x=annee, y =valeur, fill=secteur),stat = "identity", position = "stack")+
 #   scale_fill_manual(values = c("#E69F00","#009E73","#56B4E9"),labels = c("Allemagne","Europe","France"))+
 #   labs(title="Evolution des intensités en émissions de CO2 \n  de l'énergie primaire en France, en Allemagne et en Europe ", x="Année", y="Valeur(en tonnes d'équivalent CO2 par térajoule)")+
@@ -200,15 +200,15 @@ graph7 <- ggplot(df4_past, aes(x=annee,y= valeur, color=pays)) +
 
 df_Kaya = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
 
-colnames(df5)[2]<- 'Contenu CO2 energie'
-colnames(df5)[3]<- 'Intensite_energetique_PIB'
-colnames(df5)[4]<- 'PIB par tete'
+colnames(df_Kaya)[2]<- 'Contenu CO2 energie'
+colnames(df_Kaya)[3]<- 'Intensite_energetique_PIB'
+colnames(df_Kaya)[4]<- 'PIB par tete'
 
 colonnes4 <- c('Contenu CO2 energie','Intensite_energetique_PIB', 'PIB par tete','Population')
-df5_long <- df5 %>% pivot_longer(colonnes4, names_to = 'composantes', values_to = "value")
+df_Kaya_long <- df_Kaya %>% pivot_longer(colonnes4, names_to = 'composantes', values_to = "value")
 
 
-graph9 <- ggplot(df5_long, aes(x=Annee,y= value, color=composantes)) +
+graph9 <- ggplot(df_Kaya_long, aes(x=Annee,y= value, color=composantes)) +
   scale_color_manual(values = c("red","blue","orange","black"),labels = c("Contenu en CO2 de l'énergie", "Intensité énergétique du PIB", "PIB par tête", "Population"))+
   labs(title="Evolution des composantes des émissions de CO2 \n  en France après 1980 ", x="Année", y="base 100")+
   geom_line()+

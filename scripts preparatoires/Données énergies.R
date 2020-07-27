@@ -29,9 +29,9 @@ library(dplyr)
 
 #Regardons maintenant la France, l'UE, La Chine et les Etats-Unis
 
-df1 <- rdb("WB", "WDI", dimensions = list(country = c("FR", "EU","CN","US"), indicator = c("EG.USE.ELEC.KH.PC")))
+df_conso_elec <- rdb("WB", "WDI", dimensions = list(country = c("FR", "EU","CN","US"), indicator = c("EG.USE.ELEC.KH.PC")))
 
-conso_electricite1 <- df1 %>% select(country, original_period, value) %>%
+conso_electricite1 <- df_conso_elec %>% select(country, original_period, value) %>%
                   rename(annee = original_period) %>%
                   group_by(country) %>%
                   filter(!is.na(value))%>%
@@ -75,7 +75,7 @@ summarise(sd_value=sd(value)) %>%
 
 #Histogrammes
 
-hist(df1$value, col="gold", main="Consommation d'électricité")   #Histogramme sur toutes les observations de consommation d'électricité.
+hist(df_conso_elec$value, col="gold", main="Consommation d'électricité")   #Histogramme sur toutes les observations de consommation d'électricité.
 
 # df1_france <- df1 %>% filter(df1, country == "FR") %>%
 #               filter (!is.na(value)) %>%
@@ -85,20 +85,20 @@ hist(df1$value, col="gold", main="Consommation d'électricité")   #Histogramme 
 
 #On récupère les données d'une autre table seulement sur la France
 
-df2= read_csv(file ='données/Energie/Conso_electricite_fr.csv')
+df_conso_elec_fr= read_csv(file ='données/Energie/Conso_electricite_fr.csv')
 
-class(as.data.frame(df2))#On a transformé le tibble en data frame
+class(as.data.frame(df_conso_elec_fr))#On a transformé le tibble en data frame
 
-colnames(df2)[2] <- 'consommation_electricite_fr'
+colnames(df_conso_elec_fr)[2] <- 'consommation_electricite_fr'
 
-df2 <- df2[-c(56:60),]
+df_conso_elec_fr <- df_conso_elec_fr[-c(56:60),]
 #On a supprimé les dernières lignes qui ne contiennent pas de valeurs.
 
-summarise(df2,mean(consommation_electricite_fr))
+summarise(df_conso_elec_fr,mean(consommation_electricite_fr))
 #On obtient une moyenne de 5122.39 pour la France, c'est bien la même que tout à l'heure donc c'est cohérent
 
 
-hist(df2$consommation_electricite_fr, col="blue", main="Consommation d'électricité en France") 
+hist(df_conso_elec_fr$consommation_electricite_fr, col="blue", main="Consommation d'électricité en France") 
 #La majorité des observations se situe au dessus de 6000 kWh par tête (on n'a plus du tout la même répartition que dans l'histogramme précédent)
 #Conclusion : La France est plutôt un gros consommateur d'électricité si on compare avec l'UE et la Chine (pas les E-U qui restent devant)
 
@@ -114,18 +114,18 @@ hist(df2$consommation_electricite_fr, col="blue", main="Consommation d'électric
 # #Ca fonctionne sauf que les vaelurs ne correspondent pas du tout à celles que l'on voit sur le site !
 
 #On reprend donc l'autre méthode d'importation
-df4 = read_csv(file='~/données/Production_energie_fr.csv')
+df_prod_energie_fr = read_csv(file='~/données/Production_energie_fr.csv')
 
-colnames(df4)[2] <- 'production_totale_energie_fr'
+colnames(df_prod_energie_fr)[2] <- 'production_totale_energie_fr'
 
-summarise(df4, mean(production_totale_energie_fr))
+summarise(df_prod_energie_fr, mean(production_totale_energie_fr))
 #Production moyenne en France : 113,3214 (millions de tonnes métriques d'équivalent pétrole)
 
-summarise(df4,quantile(production_totale_energie_fr))
+summarise(df_prod_energie_fr,quantile(production_totale_energie_fr))
 #Les quantiles : 60.1110      102.4020         123.3840         128.5793        130.4080
 
 
-hist(df4$production_totale_energie_fr, col="red", main="Production d'énergie en France")
+hist(df_prod_energie_fr$production_totale_energie_fr, col="red", main="Production d'énergie en France")
 #L'histogramme nous permet d'observer la prépondérance des observations situées au dessus de 120 millions de tonnes métriques.
 
 
@@ -133,19 +133,19 @@ hist(df4$production_totale_energie_fr, col="red", main="Production d'énergie en
 
 #Regardons maintenant l'Allemagne
 
-df5 = read_csv(file='~/données/Production_energie_all.csv')
+df_prod_energie_all = read_csv(file='~/données/Production_energie_all.csv')
 
-colnames(df5)[2] <- 'production_totale_energie_all'
+colnames(df_prod_energie_all)[2] <- 'production_totale_energie_all'
 
-df5 <- df5[-c(1:10),]
+df_prod_energie_all <- df_prod_energie_all[-c(1:10),]
 
 #Il faut enlever les 11 premières lignes car pas de données avant 1991.
 #Le nombre inférieur de données va sans doute biaiser un peu la comparaison.
 
-summarise(df5, mean(production_totale_energie_all))
+summarise(df_prod_energie_all, mean(production_totale_energie_all))
 #On trouve une moyenne supérieure à celle de la France :134,6
 
-hist(df5$production_totale_energie_all, col="black", main="Production d'énergie en Allemagne")
+hist(df_prod_energie_all$production_totale_energie_all, col="black", main="Production d'énergie en Allemagne")
 #La majorité des valeurs se situe entre 120 et 150.
 
 #A priori, l'Allemagne produit davantage d'énergie que la France.
@@ -153,36 +153,36 @@ hist(df5$production_totale_energie_all, col="black", main="Production d'énergie
 
 #Comparaison de la distribution à l'aide de boxplots
 
-ggplot(data = df4 ) + aes (x=period, y=production_totale_energie_fr ) + geom_boxplot()
-ggplot(data = df4 , aes(x=period, y=production_totale_energie_fr ))  + geom_boxplot()
+ggplot(data = df_prod_energie_fr ) + aes (x=period, y=production_totale_energie_fr ) + geom_boxplot()
+ggplot(data = df_prod_energie_fr , aes(x=period, y=production_totale_energie_fr ))  + geom_boxplot()
 
-ggplot(data = df5 ) + aes (x=period, y=production_totale_energie_all ) + geom_boxplot()
+ggplot(data = df_prod_energie_all ) + aes (x=period, y=production_totale_energie_all ) + geom_boxplot()
 
 #On observe que la distribution des données françaises est beaucoup plus étalée que celle des données allemandes, davantage concentrées autour de la médiane.
 
 
 #Evolution comparée
 
-ggplot(data = df4 ) + aes (x=period, y=production_totale_energie_fr ) + geom_point()
+ggplot(data = df_prod_energie_fr ) + aes (x=period, y=production_totale_energie_fr ) + geom_point()
 #Pour la France, la tendance est à la hausse jusqu'à la fin du XXe siècle puis stabilisation
 
-ggplot(data = df5) + aes (x=period, y=production_totale_energie_all ) + geom_point()
+ggplot(data = df_prod_energie_all) + aes (x=period, y=production_totale_energie_all ) + geom_point()
 # Pour l'Allemagne, c'est l'inverse : on observe une baisse assez régulière depuis 1990, pour atteindre actuellement une production d'un niveau comparable à celui de la France.
 
 
 #Grouper les deux derniers tableaux pour pouvoir tout voir sur le même graphique
 
-df4 <- df4[-c(1:10),]
+df_prod_energie_fr <- df_prod_energie_fr[-c(1:10),]
 
-df_fr_all <- df4 %>% left_join(df5, by ="period", copy=FALSE)
+df_prod_energie_fr_all <- df_prod_energie_fr %>% left_join(df_prod_energie_all, by ="period", copy=FALSE)
   
-class(as.data.frame(df_fr_all))
+class(as.data.frame(df_prod_energie_fr_all))
 
 # df_fr_all <- df_fr_all[,-3]
 
-colnames(df_fr_all)[1] <- 'annee'
-colnames(df_fr_all)[2] <- 'production_totale_energie_fr'
-colnames(df_fr_all)[3] <- 'production_totale_energie_all'
+colnames(df_prod_energie_fr_all)[1] <- 'annee'
+colnames(df_prod_energie_fr_all)[2] <- 'production_totale_energie_fr'
+colnames(df_prod_energie_fr_all)[3] <- 'production_totale_energie_all'
 
 # plot1 <- ggplot(data=df_fr_all) + theme_classic()+ annotate("France",x=annee, y=production_totale_energie_fr, label="classic()", col="blue")
 # plot2 <- ggplot(data=df_fr_all) + theme_classic()+ annotate("Allemagne",x=annee, y=production_totale_energie_all, label="classic()", col="red")
@@ -199,7 +199,7 @@ colnames(df_fr_all)[3] <- 'production_totale_energie_all'
 # install.packages("cowplot")
 # library("cowplot")
 
-df_fr_all <- df_fr_all %>% filter(!is.na(production_totale_energie_all))
+df_prod_energie_fr_all <- df_prod_energie_fr_all %>% filter(!is.na(production_totale_energie_all))
 #On supprime toutes les lignes où on a des valeurs manquantes
 
  "x <-c(production_totale_energie_fr)
@@ -210,7 +210,7 @@ boxplot(x,y,col=couleurs)"
 #On essaie de regrouper les deux dernières colonnes en une seule et de dupliquer la première.
 
 colonnes <- c("production_totale_energie_fr", "production_totale_energie_all")
-df_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") %>%
+df_prod_energie_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") %>%
 
 ggplot( aes(y=value, color=production_energie)) +
   geom_boxplot() + 
@@ -219,9 +219,9 @@ ggplot( aes(y=value, color=production_energie)) +
 #On a les deux boxplots sur le même graphique.
 
 colonnes <- c("production_totale_energie_fr", "production_totale_energie_all")
-df_fr_all_2 <- df_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") 
+df_prod_energie_fr_all_2 <- df_prod_energie_fr_all %>% pivot_longer(colonnes, names_to = "production_energie", values_to = "value") 
   
-ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production_energie))+theme_bw()+
+ggplot(data = df_prod_energie_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production_energie))+theme_bw()+
   scale_color_manual(values = c("#E69F00", "#56B4E9"),labels = c("Allemagne","France"))+
   labs(title="Evolution comparée de la production \n d'énergie en France et en Allemagne")+
   theme(legend.position = "bottom",plot.title = element_text(family="TT Times New Roman", face= "bold", colour="black", size=16))
@@ -237,13 +237,13 @@ ggplot(data = df_fr_all_2 ) + geom_line(aes (x=annee, y =value, color=production
 #III.Répartitions des différentes sources d'énergie dans la consommation et dans la production primaires en France
 
 
-df_7 <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+df_conso_energie_source_fr <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
 
-df_8 <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+df_prod_energie_source_fr <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
 
-df_9 <- read_tsv(file="~/données/Primary Energy Consumption by source, Europe, 1980-2016 (in Mtoe).csv")
+df_conso_energie_source_eu <- read_tsv(file="~/données/Primary Energy Consumption by source, Europe, 1980-2016 (in Mtoe).csv")
 
-df_10<- read_tsv(file="~/données/Primary Energy Production by source, Europe, 1900-2016 (in Mtoe).csv")
+df_prod_energie_source_eu <- read_tsv(file="~/données/Primary Energy Production by source, Europe, 1900-2016 (in Mtoe).csv")
 
 
 #Utilisons le package Zoo pour traiter les données en séries temporelles
@@ -252,15 +252,15 @@ install.packages("zoo")
 library(zoo)
 
 
-z1.index <- df_7$Annee 
-z1.data <- df_7[,-1]
+z1.index <- df_conso_energie_source_fr$Annee 
+z1.data <- df_conso_energie_source_fr[,-1]
 
 z1 <- zoo(z1.data,order.by = z1.index)
 
 #z1$Nuclear
 
-z4.index <- df_8$X1
-z4.data <- df_8 [,-1]
+z4.index <- df_prod_energie_source_fr$X1
+z4.data <- df_prod_energie_source_fr [,-1]
 
 z4 <- zoo(z4.data, order.by=z4.index)
 
@@ -269,13 +269,13 @@ z4 <- zoo(z4.data, order.by=z4.index)
 
 #Ajouter comparaison avec l'Europe !
 
-z5.index <- df_9$X1
-z5.data <- df_9 [,-1]
+z5.index <- df_conso_energie_source_eu$X1
+z5.data <- df_conso_energie_source_eu [,-1]
 
 z5 <- zoo(z5.data, order.by=z5.index)
 
-z6.index <- df_10$X1
-z6.data <- df_10 [,-1]
+z6.index <- df_prod_energie_source_eu$X1
+z6.data <- df_prod_energie_source_eu [,-1]
 
 z6 <- zoo(z6.data, order.by=z6.index)
 
@@ -294,14 +294,14 @@ graphshiny1 <- ggplot(data=fortify(merge(z1$Oil,z1$Nuclear,z1$Coal, z1$Gas, z1$H
 
 #Sans Zoo
 
-df_7 <- df_7[,-c(7:12)]
+df_conso_energie_source_fr <- df_conso_energie_source_fr[,-c(7:12)]
 
-colnames(df_7)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+colnames(df_conso_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
 
 colonnes7 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
-df_7_long_bis <- df_7 %>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
+df_conso_energie_source_fr_long <- df_conso_energie_source_fr%>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
 
-graphshiny1_bis <- ggplot(df_7_long_bis, aes(x=Annee,y= value, color=pays)) +
+graphshiny1_bis <- ggplot(df_conso_energie_source_fr_long, aes(x=Annee,y= value, color=pays)) +
   scale_color_manual(values = c("black", "orange","brown","blue","green"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
   labs(title="Evolution comparée des consommations primaires \n  des principales sources d'énergie en France", x="Année", y="Valeur(en millions de tonnes d'équivalent CO2)")+
   geom_line()+
@@ -402,13 +402,13 @@ graph16c <- ggplot(data=fortify(merge(z1$Nuclear,z1$Gas),melt=TRUE)) +
 
 #Sans Zoo (pr Shiny)
 
-df_8 <- df_8[,-c(7:12)]
+df_prod_energie_source_fr <- df_prod_energie_source_fr[,-c(7:12)]
 
-colnames(df_8)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+colnames(df_prod_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
 
 colonnes8 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
 
-df_8_long_bis <- df_8 %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>% 
+df_prod_energie_source_fr_long <- df_prod_energie_source_fr %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>% 
   filter(Annee %in% c(1980:2016))
 
 #Avec
@@ -501,7 +501,7 @@ graph19c <- ggplot(data=fortify(merge(z4$Nuclear,z4$Gas),melt=TRUE)) +
 
 #Différence production-consommation des différentes sources d'énergie
 
-df_9_long_bis <- df_7_long_bis %>% left_join(df_8_long_bis, by =c("Annee","source"), copy=FALSE)%>%
+df_deseq_conso_prod <- df_conso_energie_source_fr_long %>% left_join(df_prod_energie_source_fr_long, by =c("Annee","source"), copy=FALSE)%>%
                  rename(consommation = value.x , production=value.y)%>%
                  mutate(desequilibre = consommation - production)%>%
                  filter(desequilibre != 0.0)
@@ -534,10 +534,10 @@ df_9_long_bis <- df_7_long_bis %>% left_join(df_8_long_bis, by =c("Annee","sourc
 
 #IV.Intensité du PIB en consommation primaire de pétrole ( en TEP)
 
-df9 <- read_tsv(file='~/données/Total Primary Oil Consumption intensity of GDP,  1980-2016 (in toe).csv')
+df_intensite_petrole <- read_tsv(file='~/données/Total Primary Oil Consumption intensity of GDP,  1980-2016 (in toe).csv')
 
 z2.index <- as.Date(df9$Annee,tryFormats = "%d/%m/%Y")
-z2.data <- df9 [,-1]
+z2.data <- df_intensite_petrole [,-1]
 
 z2 <- zoo(z2.data, order.by = as.yearmon(z2.index), frequency = 12)
 #Série temporelle mensuelle
