@@ -256,6 +256,31 @@ ui <-  dashboardPage(
                     highchartOutput('courbe_emissions')
                 ),
                 
+                valueBox(
+                    value = "61 Mt d'équivalent CO2",
+                    subtitle = "Déficit du premier budget carbone entre 2015 et 2018 selon le Haut Conseil pour le Climat",
+                    icon = icon("cloud"),
+                    color = "red",
+                    width = 4
+                ),
+                
+                valueBox(
+                    value = "-0.9%",
+                    subtitle = "Evolution des émissions de GES entre 2018 et 2019 selon le Haut Conseil pour le Climat, soit une baisse plus faible que celle prévue dans le cadre du deuxième budget carbone (-1.5% annuel)",
+                    icon = icon("cloud"),
+                    color = "red",
+                    width = 4
+                ),
+                
+                valueBox(
+                    value = "114 euros / tonne d'éq. CO2 ",
+                    subtitle = "Tarification effective moyenne du carbone selon le Haut Conseil pour le Climat, chiffre qui masque une grande hétérogéneité entre secteurs, acteurs et types d'énergie ",
+                    icon = icon("cloud"),
+                    color = "orange",
+                    width = 4
+                ),
+                
+                
                 box(
                     title = "Evolution des grandeurs associées aux émissions de CO2 en France",
                     footer =  "Lecture : Alors que la hausse de la population et surtout du PIB par tête tendent à tirer les émissions vers le haut, 
@@ -279,7 +304,7 @@ ui <-  dashboardPage(
                 
                 box(
                     title = "Répartition sectorielle des émissions",
-                    footer = p("Lecture:Le secteur des transports est le seul pour lequel les émissions n'ont pas diminué, en plus d'être le plus polluant. "), em("Source : Citepa, Rapport Secten 2019"),p("Nous avons fait le choix de ne garder que les quatre secteurs les plus polluants en France. "),
+                    footer = p("Lecture:Le secteur des transports est le seul pour lequel les émissions n'ont pas diminué, en plus d'être le plus polluant. "), em("Source : Citepa, Rapport Secten 2020"),p("Nous avons fait le choix de ne garder que les quatre secteurs les plus polluants en France, l'absence de l'agriculture (qui est le deuxième secteur le plus polluant en termes de GES totaux) s'expliquant par le fait que l'on ne prenne en compte que les CO2 "),
                     status = "info",
                     solidHeader = TRUE,
                     width = 8,
@@ -291,6 +316,7 @@ ui <-  dashboardPage(
                     selectInput("secteur", "Secteur choisi", 
                                 choices = c("Tous les secteurs", unique(dfshiny2$secteur)))
                 ),
+                
                 
                 
             ),
@@ -325,7 +351,7 @@ ui <-  dashboardPage(
                 
                 
                 tabBox(
-                    title = "Energies renouvelables", em("Sources : Eurostat (données en valeur), The Shift Data Portal (données en proportion)"), p("Lecture : On note d'une part qu'en valeur, la France produit plus d'énergies renouvelables que l'Allemagne alors qu'elle en consome moins. En ce qui concerne la part des ENR dans le(s) mix énergétique(s) d'autre part, la France est sous la moyenne européenne. "),
+                    title = "Energies renouvelables (hydroélectricité comprise)", em("Sources : Eurostat (données en valeur), The Shift Data Portal (données en proportion)"), p("Lecture : On note d'une part qu'en valeur, la France produit plus d'énergies renouvelables que l'Allemagne alors qu'elle en consomme moins. En ce qui concerne la part des ENR dans le(s) mix énergétique(s) d'autre part, la France est sous la moyenne européenne. "),
                     width = 8,
                     tabPanel(title = "Consommation d'énergies renouvelables (en valeur)",plotlyOutput('conso_ER_Fr_All_plot')),
                     tabPanel(title = "Consommation d'énergies renouvelables (en proportion de l'énergie consommée totale)",plotlyOutput('part_conso_ER_plot')),
