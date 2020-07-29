@@ -251,8 +251,9 @@ ui <-  dashboardPage(
                 box(
                     title = "Figure 1 : Emissions de CO2 globales",
                     footer = em("Source :The Shift Data Portal"), "Lecture: Depuis 1980, les émissions de CO2 tendent à diminuer. L'Allemagne émet plus de CO2 que la France.",
-                    status = "info",
+                    status = "primary",
                     solidHeader = TRUE,
+                    collapsible = TRUE,
                     width = 8,
                     highchartOutput('courbe_emissions')
                 ),
@@ -261,7 +262,7 @@ ui <-  dashboardPage(
                     value = "61 Mt d'équivalent CO2",
                     subtitle = "Déficit du premier budget carbone entre 2015 et 2018 selon le Haut Conseil pour le Climat",
                     icon = icon("cloud"),
-                    color = "red",
+                    color = "green",
                     width = 4
                 ),
                 
@@ -269,7 +270,7 @@ ui <-  dashboardPage(
                     value = "-0.9%",
                     subtitle = "Evolution des émissions de GES entre 2018 et 2019 selon le Haut Conseil pour le Climat, soit une baisse plus faible que celle prévue dans le cadre du deuxième budget carbone (-1.5% annuel)",
                     icon = icon("cloud"),
-                    color = "red",
+                    color = "green",
                     width = 4
                 ),
                 
@@ -277,7 +278,7 @@ ui <-  dashboardPage(
                     value = "114 euros / tonne d'éq. CO2 ",
                     subtitle = "Tarification effective moyenne du carbone selon le Haut Conseil pour le Climat, chiffre qui masque une grande hétérogéneité entre secteurs, acteurs et types d'énergie ",
                     icon = icon("cloud"),
-                    color = "orange",
+                    color = "green",
                     width = 4
                 ),
                 
@@ -290,6 +291,7 @@ ui <-  dashboardPage(
                               p("L'équation de Kaya relie quatre grandeurs : contenu en CO2 de l'énergie, intensité énergétique du PIB, PIB par tête, et population. Elle est obtenue par un procédé très simple de multiplication et de division par un même nombre de chaque côté d'une égalité, ce qui permet d'en déduire une décomposition comptable des émissions de CO2, exprimées comme le produit de ces quatre grandeurs "),
                     status = "info",
                     solidHeader = TRUE,
+                    collapsible = TRUE,
                     width = 8,
                     highchartOutput('courbe_Kaya')
                 ),
@@ -308,6 +310,7 @@ ui <-  dashboardPage(
                     footer = p("Lecture:Le secteur des transports est le seul pour lequel les émissions n'ont pas diminué, en plus d'être le plus polluant. "), em("Source : Citepa, Rapport Secten 2020"),p("Nous avons fait le choix de ne garder que les quatre secteurs les plus polluants en France, l'absence de l'agriculture (qui est le deuxième secteur le plus polluant en termes de GES totaux) s'expliquant par le fait que l'on ne prenne en compte que les CO2 "),
                     status = "info",
                     solidHeader = TRUE,
+                    collapsible = TRUE,
                     width = 8,
                     plotlyOutput('emissions_secteurs')
                 ),
@@ -315,7 +318,7 @@ ui <-  dashboardPage(
                 box(
                     width = 4,
                     selectInput("secteur", "Secteur choisi", 
-                                choices = c("Tous les secteurs", unique(dfshiny2$secteur)))
+                                choices = c("Tous les secteurs", unique(dfshiny5$secteur)))
                 ),
                 
                 
@@ -346,6 +349,7 @@ ui <-  dashboardPage(
                     footer= em("Source: UN Data"),p("Lecture: Une explication des différences en termes d'intensité carbone de la production entre France et Allemagne se trouve dans la prépondérance du nucléaire en France, qui est une énergie décarbonée, alors que l'Allemagne a fait le choix de progressivement l'abandonner. "),
                     status = "info",
                     solidHeader = TRUE,
+                    collapsible = TRUE,
                     width = 8,
                     plotlyOutput('nucl_plot')
                 ),
@@ -369,20 +373,21 @@ ui <-  dashboardPage(
                 "investissements",
                 
                 tabBox(
-                    title = "Figures 8 : Investissements annuels par secteurs", em("Source :I4CE"),p("Lecture : Ces graphiques récapitulent pour trois périodes successives le montant par secteurs des différents investissements publics pour le climat. L'un des secteurs dans lequel l'Etat investit le plus est celui des infrastructurs ferroviaires. "),
+                    title = "Figures 8 : Investissements annuels par secteurs",em("Source :I4CE"),p("Lecture : Ces graphiques récapitulent pour trois périodes successives le montant par secteurs des différents investissements publics pour le climat. L'un des secteurs dans lequel l'Etat investit le plus est celui des infrastructurs ferroviaires. "),
                     width = 8,
                     tabPanel(title = "Figure 8A : Montants d'investissement public actuel", plotlyOutput('plot_inv_secteurs_1')),
                     tabPanel(title = "Figure 8B : Nouveaux objectifs d'investissement public",plotlyOutput('plot_inv_secteurs_2')),
                     tabPanel(title = "Figure 8C : Investissements privés supplémentaires attendus", plotlyOutput('plot_inv_secteurs_3'))
                 ),
                 
-                
-                valueBox(
+                fluidRow (  
+                    
+                    valueBox(
                     value = "6,741 milliards",
                     subtitle = "Dépenses d'investissements dans les énergies renouvelables",
                     icon = icon("euro"),
                     color = "green",
-                    width = 4
+                    width = 5
                 ),
                 
                 valueBox(
@@ -390,7 +395,7 @@ ui <-  dashboardPage(
                     subtitle = "Subventions aux énergies renouvelables",
                     icon = icon("euro"),
                     color = "green",
-                    width = 4
+                    width = 5
                 ),
                 
                 valueBox(
@@ -398,8 +403,11 @@ ui <-  dashboardPage(
                     subtitle = "Dépenses publiques de R&D dans les énergies renouvelables",
                     icon = icon("euro"),
                     color = "green",
-                    width = 4
+                    width = 2
                 ),
+                    
+             ),
+               
                 
                 
                 
@@ -417,19 +425,6 @@ ui <-  dashboardPage(
             tabItem(
                 "fin_verte",
                 
-                
-                
-                tabBox(
-                    title = "Figures 10 : Financements par financeurs", em("Source :I4CE"),p("Les banques commerciales puis l'Etat sont les principaux financeurs des investissements verts."),
-                    width = 12,
-                    tabPanel(title = "Figure 10A :Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
-                    tabPanel(title = "Figure 10B :Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
-                    tabPanel(title = "Figure 10C : Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
-                ),
-                
-                
-                
-                
                 infoBox(  
                     title = "Investissements climat",
                     value = "33 milliards d'euros annuels",
@@ -437,7 +432,7 @@ ui <-  dashboardPage(
                     icon = icon("line-chart"),
                     fill = TRUE,
                     color = "green",
-                    width = 4
+                    width = 3
                 ),
                 
                 infoBox(  
@@ -457,8 +452,21 @@ ui <-  dashboardPage(
                     icon = icon("line-chart"),
                     fill = TRUE,
                     color = "green",
-                    width = 4
+                    width = 5
                 ),
+                
+                
+                tabBox(
+                    title = "Figures 10 : Financements par financeurs", em("Source :I4CE"),p("Les banques commerciales puis l'Etat sont les principaux financeurs des investissements verts."),
+                    width = 12,
+                    tabPanel(title = "Figure 10A :Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
+                    tabPanel(title = "Figure 10B :Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
+                    tabPanel(title = "Figure 10C : Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
+                ),
+                
+                
+    
+                
                 
                 infoBox(  
                     title = "Proportion d'obligations vertes",
@@ -491,16 +499,17 @@ ui <-  dashboardPage(
                     width = 4
                 ),
                 
-                infoBox(  
-                    title = "Principal domaine d'investissement vert cité",
-                    value = "Energies renouvelables, 75%",
-                    subtitle = "des fonds européens du panel étudié par Novethic en 2016",
-                    icon = icon("line-chart"),
-                    fill = TRUE,
-                    color = "green",
-                    width = 4
-                ),
                 
+             
+                
+                
+                
+                h3(paste0("Figure 11 : Répartition mondiale des obligations vertes par émetteurs")),
+                img(src = "Figure répartition obligations vertes par émetteurs.png", height = 400, width = 400),
+                
+                
+                h3(paste0("Figure 12 : Répartition géographique du marché des fonds verts")),
+                img(src = "Figure répartition géographique marché fonds verts.png", height = 400, width = 1200),
                 
                 infoBox(  
                     title = "Encours total des fonds verts français",
@@ -520,35 +529,36 @@ ui <-  dashboardPage(
                     icon = icon("line-chart"),
                     fill = TRUE,
                     color = "green",
-                    width = 4
+                    width = 8
                 ),
                 
                 
-                
-                
-                
-                
-                
-                h3(paste0("Figure 11 : Répartition mondiale des obligations vertes par émetteurs")),
-                img(src = "Figure répartition obligations vertes par émetteurs.png", height = 400, width = 400),
-                
-                
-                h3(paste0("Figure 12 : Répartition géographique du marché des fonds verts")),
-                img(src = "Figure répartition géographique marché fonds verts.png", height = 400, width = 1200),
-                
-                
-                h3(paste0("Figure 13 :Evolution des encours de fonds verts")),
+               h3(paste0("Figure 13 :Evolution des encours de fonds verts")),
                 img(src = "Figure évolution des encours de fonds verts.png", height = 400, width = 900),
                 
                 
                 h3(paste0("Figure 14 :Evolution des encours par types de fonds")),
                 img(src = "Figure évolution des encours par types de fonds.png", height = 400, width = 500),
-                
+            
                 
                 h3(paste0("Figure 15 :Evolution du marché des fonds verts par adéquation")),
                 img(src = "Figure évolution du marché des fonds verts par adéquation.png", height = 400, width = 500),
                 
-            
+               
+               
+               
+               
+               infoBox(  
+                   title = "Principal domaine d'investissement vert cité",
+                   value = "Energies renouvelables, 75%",
+                   subtitle = "des fonds européens du panel étudié par Novethic en 2016",
+                   icon = icon("line-chart"),
+                   fill = TRUE,
+                   color = "green",
+                   width = 4
+               ),
+              
+               
                 
                 
             )
@@ -601,17 +611,17 @@ server <- function(input, output) {
     
     #Courbe sur la décomposition comptable des émissions de CO2
     
-    dfshiny5 <- df_Kaya %>% select(-CO2)
+    dfshiny2 <- df_Kaya %>% select(-CO2)
     
     output$courbe_Kaya <-renderHighchart({
         highchart() %>%
             hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
             hc_chart(type = 'line') %>%
-            hc_series( list(name = 'Intensité carbone énergie', data =dfshiny5$`Contenu CO2 energie`, color='red', marker = list(symbol = 'circle')),
-                       list(name = 'Intensité énergétique du PIB', data =dfshiny5$`Intensite_energetique_PIB`, color = 'blue', marker = list(symbol = 'circle')),
-                       list(name = 'PIB par tête', data =dfshiny5$`PIB par tete`, color = 'orange', marker = list(symbol = 'circle')),
-                       list(name = 'Population', data =dfshiny5$Population, color = 'black', marker = list(symbol = 'circle') )  )  %>%
-            hc_xAxis( categories = unique(dfshiny5$Annee) ) %>%
+            hc_series( list(name = 'Intensité carbone énergie', data =dfshiny2$`Contenu CO2 energie`, color='red', marker = list(symbol = 'circle')),
+                       list(name = 'Intensité énergétique du PIB', data =dfshiny2$`Intensite_energetique_PIB`, color = 'blue', marker = list(symbol = 'circle')),
+                       list(name = 'PIB par tête', data =dfshiny2$`PIB par tete`, color = 'orange', marker = list(symbol = 'circle')),
+                       list(name = 'Population', data =dfshiny2$Population, color = 'black', marker = list(symbol = 'circle') )  )  %>%
+            hc_xAxis( categories = unique(dfshiny2$Annee) ) %>%
             hc_yAxis( title = list(text = "en base 100 année 1980")  ) %>%
             hc_plotOptions(column = list(
                 dataLabels = list(enabled = F),
@@ -692,14 +702,14 @@ server <- function(input, output) {
     
     #Figure sur la répartition des émissions par secteurs
     
-    dfshiny2 <- df_secteurs_long
+    dfshiny5 <- df_secteurs_long
     
     output$emissions_secteurs <- renderPlotly({
         
         if(input$secteur == "Tous les secteurs"){
-            data = dfshiny2
+            data = dfshiny5
         } else {
-            data = dfshiny2 %>%
+            data = dfshiny5 %>%
                 filter(secteur== input$secteur)%>%
                 group_by(Annee)
         }
