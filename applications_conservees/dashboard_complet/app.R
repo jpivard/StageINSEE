@@ -33,10 +33,10 @@ df_secteurs <- df_secteurs[,-5]
 df_secteurs <- df_secteurs[,-6]
 
 colnames(df_secteurs)[2] <- "Energie"
-colnames(df_secteurs)[3] <- "Ind_manuf"
-colnames(df_secteurs)[4] <- "Residentiel_Tertiaire"
+colnames(df_secteurs)[3] <- "Industrie manufacturière"
+colnames(df_secteurs)[4] <- "Résidentiel et Tertiaire"
 
-colonnes3 = c("Energie","Ind_manuf", "Residentiel_Tertiaire", "Transports")
+colonnes3 = c("Energie","Industrie manufacturière", "Résidentiel et Tertiaire", "Transports")
 df_secteurs_long <- df_secteurs %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
 
 
@@ -233,8 +233,9 @@ ui <-  dashboardPage(
             menuItem("L'énergie en France", tabName = "energie", icon = icon("list-ol")),
             menuItem("Investissements climat", tabName = "investissements", icon = icon("dashboard")),
             menuItem("Finance verte", tabName = "fin_verte", icon = icon("list-ol")),
-            menuItem("Sources et autres informations", tabName="infos", icon = icon("database")),
-            menuItem("Les ingrédients de cette appli", icon = icon("github"), href = "https://github.com/jpivard/StageINSEE")
+            menuItem("Sources et autres informations",  icon = icon("database"), href= "https://github.com/jpivard/StageINSEE/blob/master/Sources%20et%20autres%20informations.md"),
+            menuItem("Les ingrédients de cette appli", icon = icon("github"), href = "https://github.com/jpivard/StageINSEE"),
+            menuItem("Le rapport associé", icon = icon("overleaf"), href = "https://www.overleaf.com/project/5ef222dfa6646d0001488302")
         )
     ),
     
@@ -248,7 +249,7 @@ ui <-  dashboardPage(
                 "CO2",
                 
                 box(
-                    title = "Emissions de CO2 globales",
+                    title = "Figure 1 : Emissions de CO2 globales",
                     footer = em("Source :The Shift Data Portal"), "Lecture: Depuis 1980, les émissions de CO2 tendent à diminuer. L'Allemagne émet plus de CO2 que la France.",
                     status = "info",
                     solidHeader = TRUE,
@@ -282,7 +283,7 @@ ui <-  dashboardPage(
                 
                 
                 box(
-                    title = "Evolution des grandeurs associées aux émissions de CO2 en France",
+                    title = "Figure 2 : Evolution des grandeurs associées aux émissions de CO2 en France",
                     footer =  "Lecture : Alors que la hausse de la population et surtout du PIB par tête tendent à tirer les émissions vers le haut, 
                               les moindres intensités en carbone de l'énergie et en énergie du PIB expliquent la tendance globale à la baisse.",
                               em("Source :The Shift Data Portal"),
@@ -294,16 +295,16 @@ ui <-  dashboardPage(
                 ),
                 
                 tabBox(
-                    title = "Intensités carbone de la production",em("Source :The Shift Data Portal"), 
+                    title = "Figures 3: Intensités carbone de la production",em("Source :Banque Mondiale"), 
                         p("Lecture : Les tendances à la baisse de l'intensité carbone du PIB et de l'énergie sont communes à la France, l'Allemagne et à l'Europe en général. On retrouve l'écart décrit précédemment entre la France et l'Allemagne."),
                     width = 8,
-                    tabPanel(title = "Intensité carbone du PIB", highchartOutput('courbe_intensite_carbone')),
-                    tabPanel(title = "Intensité carbone de l'énergie", highchartOutput('courbe_intensite_carbone_energie'))
+                    tabPanel(title = "Figure 3A: Intensité carbone du PIB", highchartOutput('courbe_intensite_carbone')),
+                    tabPanel(title = "Figure 3B: Intensité carbone de l'énergie", highchartOutput('courbe_intensite_carbone_energie'))
                 ),
                 
                 
                 box(
-                    title = "Répartition sectorielle des émissions",
+                    title = "Figure 4 : Répartition sectorielle des émissions",
                     footer = p("Lecture:Le secteur des transports est le seul pour lequel les émissions n'ont pas diminué, en plus d'être le plus polluant. "), em("Source : Citepa, Rapport Secten 2020"),p("Nous avons fait le choix de ne garder que les quatre secteurs les plus polluants en France, l'absence de l'agriculture (qui est le deuxième secteur le plus polluant en termes de GES totaux) s'expliquant par le fait que l'on ne prenne en compte que les CO2 "),
                     status = "info",
                     solidHeader = TRUE,
@@ -326,11 +327,11 @@ ui <-  dashboardPage(
                 "energie",
                 
                 tabBox(
-                    title = "Analyse par sources d'énergie",em("Source :The Shift Data Portal"),p("Lecture:L'énergie nucléaire est de loin la plus produite en France. Le déséquilibre entre consommation et production (relié à la balance commerciale) est le plus fort pour le pétrole : nous en produisons très peu mais en consommons encore une quantité substantielle via nos importations."),
+                    title = "Figures 5 :Analyse par sources d'énergie",em("Source :The Shift Data Portal"),p("Lecture:L'énergie nucléaire est de loin la plus produite en France. Le déséquilibre entre consommation et production (relié à la balance commerciale) est le plus fort pour le pétrole : nous en produisons très peu mais en consommons encore une quantité substantielle via nos importations."),
                     width = 8,
-                    tabPanel(title = "Répartition de la consommation par sources", plotlyOutput('conso_sources_energies_plot')),
-                    tabPanel(title = "Répartition de la production par sources",plotlyOutput('prod_sources_energies_plot')),
-                    tabPanel(title = "Déséquilibre consommation/production", plotlyOutput('deseq_sources_energies_plot'))
+                    tabPanel(title = "Figure 5A : Répartition de la consommation par sources", plotlyOutput('conso_sources_energies_plot')),
+                    tabPanel(title = "Figure 5B : Répartition de la production par sources",plotlyOutput('prod_sources_energies_plot')),
+                    tabPanel(title = "Figure 5C : Déséquilibre consommation/production", plotlyOutput('deseq_sources_energies_plot'))
                 ),
                 
                 box(
@@ -341,7 +342,7 @@ ui <-  dashboardPage(
                 
                 
                 box(
-                    title = "Production d'énergie nucléaire en France et comparaison avec l'Allemagne",
+                    title = "Figure 6 : Production d'énergie nucléaire en France et comparaison avec l'Allemagne",
                     footer= em("Source: UN Data"),p("Lecture: Une explication des différences en termes d'intensité carbone de la production entre France et Allemagne se trouve dans la prépondérance du nucléaire en France, qui est une énergie décarbonée, alors que l'Allemagne a fait le choix de progressivement l'abandonner. "),
                     status = "info",
                     solidHeader = TRUE,
@@ -351,12 +352,12 @@ ui <-  dashboardPage(
                 
                 
                 tabBox(
-                    title = "Energies renouvelables (hydroélectricité comprise)", em("Sources : Eurostat (données en valeur), The Shift Data Portal (données en proportion)"), p("Lecture : On note d'une part qu'en valeur, la France produit plus d'énergies renouvelables que l'Allemagne alors qu'elle en consomme moins. En ce qui concerne la part des ENR dans le(s) mix énergétique(s) d'autre part, la France est sous la moyenne européenne. "),
+                    title = "Figures 7 : Energies renouvelables (hydroélectricité comprise)", em("Sources : Eurostat (données en valeur), The Shift Data Portal (données en proportion)"), p("Lecture : On note d'une part qu'en valeur, la France produit plus d'énergies renouvelables que l'Allemagne alors qu'elle en consomme moins. En ce qui concerne la part des ENR dans le(s) mix énergétique(s) d'autre part, la France est sous la moyenne européenne. "),
                     width = 8,
-                    tabPanel(title = "Consommation d'énergies renouvelables (en valeur)",plotlyOutput('conso_ER_Fr_All_plot')),
-                    tabPanel(title = "Consommation d'énergies renouvelables (en proportion de l'énergie consommée totale)",plotlyOutput('part_conso_ER_plot')),
-                    tabPanel(title = "Production d'énergies renouvelables (en valeur)",plotlyOutput('prod_ER_Fr_All_plot')),
-                    tabPanel(title = "Production d'énergies renouvelables (en proportion de l'énergie produite totale)", plotlyOutput('part_prod_ER_plot'))
+                    tabPanel(title = "Figure 7A : Consommation d'énergies renouvelables (en valeur)",plotlyOutput('conso_ER_Fr_All_plot')),
+                    tabPanel(title = "Figure 7B : Consommation d'énergies renouvelables (en proportion de l'énergie consommée totale)",plotlyOutput('part_conso_ER_plot')),
+                    tabPanel(title = "Figure 7C : Production d'énergies renouvelables (en valeur)",plotlyOutput('prod_ER_Fr_All_plot')),
+                    tabPanel(title = "Figure 7D :Production d'énergies renouvelables (en proportion de l'énergie produite totale)", plotlyOutput('part_prod_ER_plot'))
                 ),
                 
                 
@@ -368,11 +369,11 @@ ui <-  dashboardPage(
                 "investissements",
                 
                 tabBox(
-                    title = "Investissements annuels par secteurs", em("Source :I4CE"),p("Lecture : Ces graphiques récapitulent pour trois périodes successives le montant par secteurs des différents investissements publics pour le climat. L'un des secteurs dans lequel l'Etat investit le plus est celui ds infrastructurs ferroviaires. "),
+                    title = "Figures 8 : Investissements annuels par secteurs", em("Source :I4CE"),p("Lecture : Ces graphiques récapitulent pour trois périodes successives le montant par secteurs des différents investissements publics pour le climat. L'un des secteurs dans lequel l'Etat investit le plus est celui des infrastructurs ferroviaires. "),
                     width = 8,
-                    tabPanel(title = "Montants d'investissement public actuel", plotlyOutput('plot_inv_secteurs_1')),
-                    tabPanel(title = "Nouveaux objectifs d'investissement public",plotlyOutput('plot_inv_secteurs_2')),
-                    tabPanel(title = "Investissements privés supplémentaires attendus", plotlyOutput('plot_inv_secteurs_3'))
+                    tabPanel(title = "Figure 8A : Montants d'investissement public actuel", plotlyOutput('plot_inv_secteurs_1')),
+                    tabPanel(title = "Figure 8B : Nouveaux objectifs d'investissement public",plotlyOutput('plot_inv_secteurs_2')),
+                    tabPanel(title = "Figure 8C : Investissements privés supplémentaires attendus", plotlyOutput('plot_inv_secteurs_3'))
                 ),
                 
                 
@@ -403,11 +404,11 @@ ui <-  dashboardPage(
                 
                 
                 tabBox(
-                    title = "Investissements par investisseurs", em("Source :I4CE"),p("Les principaux investisseurs sont les ménages, l'implication des entreprises est vouée à croître au cours des prochaines années. "),
+                    title = "Figures 9 : Investissements par investisseurs", em("Source :I4CE"),p("Les principaux investisseurs sont les ménages, l'implication des entreprises est vouée à croître au cours des prochaines années. "),
                     width = 8,
-                    tabPanel(title = "Investissements historiques(2016-2018)", plotlyOutput('financeurs_plot_1')),
-                    tabPanel(title = "Investissements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_2')),
-                    tabPanel(title = "Investissements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_3'))
+                    tabPanel(title = "Figure 9A : Investissements historiques(2016-2018)", plotlyOutput('financeurs_plot_1')),
+                    tabPanel(title = "Figure 9B : Investissements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_2')),
+                    tabPanel(title = "Figure 9C : Investissements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_3'))
                 ),
                 
                 
@@ -419,11 +420,11 @@ ui <-  dashboardPage(
                 
                 
                 tabBox(
-                    title = "Financements par financeurs", em("Source :I4CE"),p("Les banques commerciales puis l'Etat sont les principaux financeurs des investissements verts."),
+                    title = "Figures 10 : Financements par financeurs", em("Source :I4CE"),p("Les banques commerciales puis l'Etat sont les principaux financeurs des investissements verts."),
                     width = 12,
-                    tabPanel(title = "Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
-                    tabPanel(title = "Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
-                    tabPanel(title = "Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
+                    tabPanel(title = "Figure 10A :Financements historiques(2016-2018)", plotlyOutput('financeurs_plot_4')),
+                    tabPanel(title = "Figure 10B :Financements à court terme (jusque 2023)",plotlyOutput('financeurs_plot_5')),
+                    tabPanel(title = "Figure 10C : Financements à moyen terme (2024-2028)", plotlyOutput('financeurs_plot_6'))
                 ),
                 
                 
@@ -528,39 +529,26 @@ ui <-  dashboardPage(
                 
                 
                 
-                h3(paste0("Répartition mondiale des obligations vertes par émetteurs")),
+                h3(paste0("Figure 11 : Répartition mondiale des obligations vertes par émetteurs")),
                 img(src = "Figure répartition obligations vertes par émetteurs.png", height = 400, width = 400),
                 
                 
-                h3(paste0("Répartition géographique du marché des fonds verts")),
+                h3(paste0("Figure 12 : Répartition géographique du marché des fonds verts")),
                 img(src = "Figure répartition géographique marché fonds verts.png", height = 400, width = 1200),
                 
                 
-                h3(paste0("Evolution des encours de fonds verts")),
+                h3(paste0("Figure 13 :Evolution des encours de fonds verts")),
                 img(src = "Figure évolution des encours de fonds verts.png", height = 400, width = 900),
                 
                 
-                h3(paste0("Evolution des encours par types de fonds")),
+                h3(paste0("Figure 14 :Evolution des encours par types de fonds")),
                 img(src = "Figure évolution des encours par types de fonds.png", height = 400, width = 500),
                 
                 
-                h3(paste0("Evolution du marché des fonds verts par adéquation")),
+                h3(paste0("Figure 15 :Evolution du marché des fonds verts par adéquation")),
                 img(src = "Figure évolution du marché des fonds verts par adéquation.png", height = 400, width = 500),
                 
-                
-                
-                
-                
-                
-                tabItem(
-                    "infos",
-                    
-                    #Ici : ajouter les sources des bases de données
-                    #Ainsi que quelques explications/définitions si besoin
-                    #Et mettre le lien vers le document Overleaf
-                    
-                    
-                )
+            
                 
                 
             )
@@ -654,7 +642,7 @@ server <- function(input, output) {
                        list(name = 'Allemagne', data =dfshiny3$DE, color = 'red', marker = list(symbol = 'circle')),
                        list(name = 'Union Européenne', data =dfshiny3$EU, color = 'green', marker = list(symbol = 'circle') )  )  %>%
             hc_xAxis( categories = unique(dfshiny3$annee) ) %>%
-            hc_yAxis( title = list(text = "en tonnes d'équivalent CO2 par dollar")  ) %>%
+            hc_yAxis( title = list(text = "en tonnes d'équivalent CO2 par millier de dollars")  ) %>%
             hc_plotOptions(column = list(
                 dataLabels = list(enabled = F),
                 #stacking = "normal",
@@ -663,7 +651,7 @@ server <- function(input, output) {
             hc_tooltip(table = TRUE,
                        sort = TRUE,
                        pointFormat = paste0( '<br> <span style="color:{point.color}">\u25CF</span>',
-                                             " {series.name}: {point.y} tCO2eq/$"),
+                                             " {series.name}: {point.y} tCO2eq/1000$"),
                        headerFormat = '<span style="font-size: 13px">Année {point.key}</span>'
             ) %>%
             hc_legend( layout = 'vertical', align = 'left', verticalAlign = 'top', floating = T, x = 100, y = 000 )
