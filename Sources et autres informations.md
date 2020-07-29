@@ -95,6 +95,19 @@ L'estimation des sommes à investir sur les périodes à venir s'appuie sur les 
 "Elles permettent aux entreprises et aux entités publiques de financer leurs projets environnementaux, plus particulièrement les investissements en infrastructures. Elles se différencient des obligations classiques par deux traits essentiels : un reporting sur les investissements qu’elles financent (une obligation classique n’est pas accompagnée d’un reporting spécifique et le niveau de détail est souvent moins important) et le caractère vert des projets financés. Pourtant, si elles sont définies dans leur principe, aucun standard précis ne caractérise la dimension environnementale des projets financés. Les enjeux actuels portent donc notamment sur la qualification verte des projets et sur le renforcement du reporting." (Rapport cité du Ministère de la Transition Ecologique).
 
 
+-Figures 11 à 15 : Définition des fonds verts
+
+Citons ici le rapport publié par Novethic, dont les références sont mentionnées plus haut et en bibliographie du rapport :
+"Les fonds d’investissement environnementaux sont aujourd’hui définis comme des fonds dont la stratégie indique qu’ils investissent totalement ou partiellement dans des entreprises dont l’activité offre un bénéfice environnemental." Ce bénéfice concerne des domaines comme le financement de l'efficacité énergétique, le développement des énergies renouvelables ou encore la mobilité durable par exemple (la liste complète est faite dans le rapport).
+
+La cadre de l'analyse est restreint par Novethic aux OPCVM (Organismes de placement collectif en valeurs mobilières, ou UCITS) effectivement accessibles aux particuliers et aux investisseurs institutionnels européens, ce qui exclut de la base de données "mandats dédiés, fonds d’infrastructures dans les énergies renouvelables des investisseurs institutionnels ou les fonds d’investissement alternatifs (FIA) non cotés ainsi que les investissements verts « directs » dans des entreprises ou des projets".
+
+
+-Figure 15 : Fonds "Low Carbon" en comparaison des autres fonds verts
+
+Selon Novethic, ils désignent "les fonds environnementaux dont la stratégie vise à réduire les émissions de gaz à effet de serre, en sélectionnant les mieux-disant au sein de chaque secteur d’activité, y compris dans les industries lourdes, les services et la finance (approche de type best-in-class), (qui) sont ici traités à part. En effet, cette stratégie se distingue des approches thématiques car les portefeuilles qui en découlent sont investis dans tous les secteurs économiques, conformément aux grands indices boursiers. Ce type de fonds et la fidélité de la stratégie d’investissement en rapport avec l’approche bas carbone promise, ne peut être identifié via une analyse externe du portefeuille sans connaitre l’empreinte carbone de toutes les entreprises sous-jacentes."
+
+
 -Complément aux figures 11 à 15 sur la finance verte
 
 Ces figures témoignent d'un développpement croissant de la finance verte. Mais comme je le mentionne brièvement dans mon rapport, la pérennisation de cet élan se heurte encore à un défi majeur, à savoir la nécessité de mieux définir de manière commune les obligations vertes. Pour citer le rapport évoqué plus haut, "Ce marché présente toutefois des risques liés à sa crédibilité. Sont en effet pointés le manque de définition claire du caractère vert, l’absence de cadrage et le
@@ -104,6 +117,8 @@ Des initiatives privées et publiques sont apparues pour tenter d'y remédier.
 Initiatives privées : Les Green Bond Principles "fixent un certain nombre de bonnes pratiques à respecter : définir
 au préalable les activités potentiellement éligibles aux fonds levés par les obligations vertes, mettre en place un dispositif de contrôle surveillant de manière indépendante le caractère écologique de l’émission, ou avoir un reporting annuel public permettant de suivre l’avancement des projets. Dans ce dernier cas, il est nécessaire de recourir à des indicateurs permettant d’objectiver le caractère pleinement écologique des projets financés" (même référence). Ils ont cependant des limites comme l' "absence de définition des projets se qualifiant comme « verts » dont la méthodologie est renvoyée à d’autres acteurs comme l’association CBI (cf infra)". D'autre part, "la Climate Bonds Initiative (CBI), a pour objectif de mettre en place des nomenclatures définissant par secteurs d’activité les pratiques éligibles au qualificatif de Green Bonds. Cela suppose un travail de très longue haleine, qui fait face à un certain nombre de problématiques comme la définition de critères/pratiques internationales alors même que les écarts technologiques entre pays développés et pays émergents rendent très difficile un consensus international".
 Initiatives publiques : " Le label « Transition énergétique et écologique pour le climat », créé en France par décret du 10 décembre 2015, labellise des fonds qui investissent dans la transition énergétique et écologique. Ces fonds intègrent les obligations de projets, sous réserve qu’elles financent des projets relevant d’activités définies par la nomenclature du label (adaptée de celle de la Climate Bonds Initiative) et qu’elles soient alignées sur les Green Bonds Principles"(m^me référence).
+
+
 
 
 
