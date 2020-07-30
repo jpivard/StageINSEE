@@ -78,10 +78,26 @@ Figure sur les émetteurs d'obligations vertes : https://www.ecologique-solidair
 Consulter le rapport associé (page 6) pour plus de détails.
 
 
--Figure 6 : Sur le nucléaire
+-Figures de la page sur l'énergie : 
+
+Figures 5 : Définitions de l'énergie primaire produite et consommée ( Source : The Shift Data Portal )
+
+L'énergie primaire consommée correspond à la demande d'énergie d'un pays. Elle inclut la consommation du secteur de l'énergie, les pertes survenues durant la transformation et la distribution de l'énergie, et la consommation finale par les utilisateurs.
+
+L'énergie primaire produite renvoie à toute extraction de produits énergétiques à partir de sources naturelles pour les rendre exploitables. 
+A contrario, transformer de l'énergie sous une autre forme d'énergie ne relève pas de la production primaire d'énergie.
+
+
+Figure 6 : Sur le nucléaire
 
 Nous avons regroupé l'énergie nucléaire avec les énergies renouvelables car il s'agit d'une énergie décarbonée, expliquant la faiblesse relative de l'intensité carbone française par rapport à d'autres pays européens. L'énergie nucléaire est néanmoins l'objet de nombreux débats dans le cadre de la transition écologique, et les débats sur le fait de l'inclure ou non dans la taxonomie des énergies vertes à l'échelle européenne est l'une des manifestations de l'ambiguïté de son caractère plus ou moins vert.
 L'Allemagne a fait le choix de sortir du nucléaire définitivement en 2022, dans le but de se concentrer sur les énergies renouvelables. Il ne'en reste pas moins que le mix énergétique allemand est bien plus polluant que le celui de la France aujourd'hui.
+
+
+Figures 7 : Consommation finale d'énergie ( Source : The Shift Data Portal )
+
+Elle désigne l'énergie totale consommée par les utilisateurs : ménages, industrie et agriculture.
+
 
 
 - Figures 9 et 10 : Distinction entre investisseurs et financeurs 
@@ -128,7 +144,7 @@ Des initiatives privées et publiques sont apparues pour tenter d'y remédier.
 
 1) Initiatives privées : Les Green Bond Principles "fixent un certain nombre de bonnes pratiques à respecter : définir au préalable les activités potentiellement éligibles aux fonds levés par les obligations vertes, mettre en place un dispositif de contrôle surveillant de manière indépendante le caractère écologique de l’émission, ou avoir un reporting annuel public permettant de suivre l’avancement des projets. Dans ce dernier cas, il est nécessaire de recourir à des indicateurs permettant d’objectiver le caractère pleinement écologique des projets financés" (même référence). Ils ont cependant des limites comme l' "absence de définition des projets se qualifiant comme « verts » dont la méthodologie est renvoyée à d’autres acteurs comme l’association CBI (cf infra)". D'autre part, "la Climate Bonds Initiative (CBI), a pour objectif de mettre en place des nomenclatures définissant par secteurs d’activité les pratiques éligibles au qualificatif de Green Bonds. Cela suppose un travail de très longue haleine, qui fait face à un certain nombre de problématiques comme la définition de critères/pratiques internationales alors même que les écarts technologiques entre pays développés et pays émergents rendent très difficile un consensus international".
 
-2) Initiatives publiques : "Le label « Transition énergétique et écologique pour le climat », créé en France par décret du 10 décembre 2015, labellise des fonds qui investissent dans la transition énergétique et écologique. Ces fonds intègrent les obligations de projets, sous réserve qu’elles financent des projets relevant d’activités définies par la nomenclature du label (adaptée de celle de la Climate Bonds Initiative) et qu’elles soient alignées sur les Green Bonds Principles"(m^me référence).
+2) Initiatives publiques : "Le label « Transition énergétique et écologique pour le climat », créé en France par décret du 10 décembre 2015, labellise des fonds qui investissent dans la transition énergétique et écologique. Ces fonds intègrent les obligations de projets, sous réserve qu’elles financent des projets relevant d’activités définies par la nomenclature du label (adaptée de celle de la Climate Bonds Initiative) et qu’elles soient alignées sur les Green Bonds Principles"(même référence).
 
 
 
