@@ -303,7 +303,7 @@ ui <-  dashboardPage(
                     footer =  "Lecture : Alors que la hausse de la population et surtout du PIB par tête tendent à tirer les émissions vers le haut, 
                               les moindres intensités en carbone de l'énergie et en énergie du PIB expliquent la tendance globale à la baisse.",
                               em("Source :The Shift Data Portal"),
-                              p("L'équation de Kaya relie quatre grandeurs : contenu en CO2 de l'énergie, intensité énergétique du PIB, PIB par tête, et population. Elle est obtenue par un procédé très simple de multiplication et de division par un même nombre de chaque côté d'une égalité, ce qui permet d'en déduire une décomposition comptable des émissions de CO2, exprimées comme le produit de ces quatre grandeurs "),
+                              p("L'équation de Kaya relie quatre grandeurs : contenu en CO2 de l'énergie, intensité énergétique du PIB, PIB par tête, et population. Elle est obtenue par un procédé très simple de multiplication et de division par un même nombre de chaque côté d'une égalité, ce qui permet d'en déduire une décomposition comptable des émissions de CO2, exprimées comme le produit de ces quatre grandeurs. "),
                     status =  "success",
                     solidHeader = TRUE,
                     collapsible = TRUE,
@@ -313,7 +313,7 @@ ui <-  dashboardPage(
                 
                 tabBox(
                     title = "Figures 3: Intensités carbone de la production",em("Source :Banque Mondiale"), 
-                        p("Lecture : Les tendances à la baisse de l'intensité carbone du PIB et de l'énergie sont communes à la France, l'Allemagne et à l'Europe en général. On retrouve l'écart décrit précédemment entre la France et l'Allemagne."),
+                        p("Lecture : Les tendances à la baisse de l'intensité carbone du PIB et de l'énergie sont communes à la France, l'Allemagne et à l'Europe en général. On retrouve l'écart décrit précédemment entre la France et l'Allemagne. La France est nettement sous la moyenne européenne."),
                     width = 8,
                     tabPanel(title = "Figure 3A: Intensité carbone du PIB", highchartOutput('courbe_intensite_carbone')),
                     tabPanel(title = "Figure 3B: Intensité carbone de l'énergie", highchartOutput('courbe_intensite_carbone_energie'))
