@@ -14,6 +14,7 @@ library(shinydashboard)
 # ------ 1. CO2 ---------------------
 
 #Emissions globales
+
 df_CO2= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
 
 colnames(df_CO2)[1]<- 'Annee'
@@ -208,9 +209,15 @@ colnames(dfinv_3)[3] <- 'Investissements_court_terme'
 colnames(dfinv_3)[4] <- 'Investissements_moyen_terme'
 
 
+
 # -------- 4.Finance verte -------------------------------
 
 #Utilise les données du tableau précédent.
+
+colnames(dfinv_3)[8] <- 'Financements_historiques'
+colnames(dfinv_3)[9] <- 'Financements_court_terme'
+colnames(dfinv_3)[10] <- 'Financements_moyen_terme'
+
 
 
 
