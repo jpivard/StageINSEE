@@ -261,8 +261,6 @@ ui <-  dashboardPage(
             tabItem(
                 "CO2_global",
                 
-                startExpanded = TRUE,
-                
                 box(
                     title = "Figure 1 : Emissions de CO2 globales",
                     footer = em("Source :The Shift Data Portal"), "Lecture: Depuis 1980, les émissions de CO2 tendent à diminuer. L'Allemagne émet plus de CO2 que la France.",
@@ -617,6 +615,8 @@ server <- function(input, output) {
         filter(Annee %in% c(1980:2016))
     
     output$courbe_emissions <-renderHighchart({
+        req(input$CO2_global)
+        paste("Expanded menuItem:", input$CO2_global)
         highchart() %>%
             hc_exporting(enabled = TRUE, formAttributes = list(target = "_blank")) %>%
             hc_chart(type = 'line') %>%
@@ -780,6 +780,8 @@ server <- function(input, output) {
     })
     
     output$conso_sources_energies_plot<- renderPlotly({
+        req(input$energie_1)
+        paste("Expanded menuItem:", input$energie_1)
         conso_sources_energies_plot <- ggplot( donnees_sources_energie_conso(), aes(x=Annee,y=value, fill=source))+ 
             geom_bar(aes (x=Annee, y =value, fill=source),stat = "identity", position = "stack")+
             scale_fill_manual(values = c("brown","blue","green","orange","black"),labels = c("Pétrole","Nucléaire","Charbon","Gaz","Hydroélectricité"))+
@@ -919,6 +921,8 @@ server <- function(input, output) {
     #Figures sur les investissements par secteurs 
     
     output$plot_inv_secteurs_1 <- renderPlotly({
+        req(input$inv_1)
+        paste("Expanded menuItem:", input$inv_1)
         plot_inv_secteurs_1 <-
             ggplot(dfinv_2, 
                    aes(x= Montant_financement_public_annuel_actuel, 
@@ -1089,6 +1093,8 @@ server <- function(input, output) {
     dffin <- dfinv_3 
     
     output$financeurs_plot_4<- renderPlotly({
+        req(input$fin_verte_1)
+        paste("Expanded menuItem:", input$fin_verte_1)
         financeurs_plot_4 <- ggplot(dffin, aes(x=Financeurs,y=Financements_historiques)) +
             geom_bar(aes (x=Financeurs, y =Financements_historiques, fill=Financeurs),stat = "identity", position = "stack")+
             scale_fill_manual(values = c("grey","green","brown","orange","blue","pink", "purple", "black", "red","yellow"),labels = c("Fonds_européens","Etat_et_agences","Collectivites_territoriales","Bailleurs_sociaux","Gestionnaires_infrastructures","Banques_publiques", "Banques_commerciales","Marches_financiers", "Entreprises","Menages"))+
