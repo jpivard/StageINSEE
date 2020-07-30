@@ -7,6 +7,7 @@ library(tidyr)
 library(readr)
 library(plotly)
 library(shinydashboard)
+library(rsconnect)
 
 
 ###### Traitement des données #################
