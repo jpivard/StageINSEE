@@ -10,215 +10,262 @@ library(shinydashboard)
 library(rsconnect)
 
 
-###### Traitement des données #################
 
-# ------ 1. CO2 ---------------------
 
+
+# ###### Traitement des données #################
+# 
+# # ------ 1. CO2 ---------------------
+# 
 #Emissions globales
 
-df_CO2= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
-
-colnames(df_CO2)[1]<- 'Annee'
-colnames(df_CO2)[4]<- 'Allemagne'
-
-df_CO2_fr_all <- df_CO2[,-3]
-colonnes2 <- c("France","Allemagne")
-df_CO2_fr_all_long<- df_CO2_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
-
-
-#Emissions par secteurs
-df_secteurs = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
-
-#On ne retient que les principaux secteurs émetteurs
-df_secteurs <- df_secteurs[,-c(2:4)]
-df_secteurs <- df_secteurs[,-5]
-df_secteurs <- df_secteurs[,-6]
-
-colnames(df_secteurs)[2] <- "Energie"
-colnames(df_secteurs)[3] <- "Industrie manufacturière"
-colnames(df_secteurs)[4] <- "Résidentiel et Tertiaire"
-
-colonnes3 = c("Energie","Industrie manufacturière", "Résidentiel et Tertiaire", "Transports")
-df_secteurs_long <- df_secteurs %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
-
-
-#Intensité carbone du PIB
-df_intensite_PIB = read_csv(file='~/données/Emissions intensity of GDP data.csv')
-
-df_intensite_PIB_past <- df_intensite_PIB[-c(83:90),] 
-df_intensite_PIB_past <- df_intensite_PIB_past[-28,]
-#On retire les colonnes correspondant à des prévisions et la donnée supplémentaire pour l'UE (on prend la dernière pour simplifier)
-
-df_intensite_PIB_past$year<- c(rep(seq(1990,2016),3))
-
-#On supprime les colonnes inutiles et on renomme les colonnes restantes
-
-df_intensite_PIB_past <- df_intensite_PIB_past[,-c(1:2)]
-df_intensite_PIB_past <- df_intensite_PIB_past[,-2]
-df_intensite_PIB_past <- df_intensite_PIB_past[,-3]
-
-colnames(df_intensite_PIB_past)[1] <- 'pays'
-colnames(df_intensite_PIB_past)[2] <- 'valeur'
-colnames(df_intensite_PIB_past)[3] <- 'annee'
-
-
-#Intensité carbone de l'énergie
-df_intensite_energie = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
-
-df_intensite_energie_past <- df_intensite_energie[-c(81:86),] 
-df_intensite_energie_past <- df_intensite_energie_past[-80,] 
-df_intensite_energie_past <- df_intensite_energie_past[-53,] 
-#On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
-
-df_intensite_energie_past$year<- c(rep(seq(1990,2015),3))
-
-#On supprime les colonnes inutiles et on renomme les colonnes restantes
-
-df_intensite_energie_past <- df_intensite_energie_past[,-c(1:2)]
-df_intensite_energie_past <- df_intensite_energie_past[,-2]
-df_intensite_energie_past <- df_intensite_energie_past[,-3]
-
-colnames(df_intensite_energie_past)[1] <- 'pays'
-colnames(df_intensite_energie_past)[2] <- 'valeur'
-colnames(df_intensite_energie_past)[3] <- 'annee'
-
-
-#Décomposition comptable des émissions de CO2
-
-df_Kaya = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
-
-colnames(df_Kaya)[2]<- 'Contenu CO2 energie'
-colnames(df_Kaya)[3]<- 'Intensite_energetique_PIB'
-colnames(df_Kaya)[4]<- 'PIB par tete'
-
-
-
-
-
-# ------ 2.Energie ----------------------
-
-#Consommation et production par sources
-
-df_conso_energie_source_fr <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
-df_conso_energie_source_fr <- df_conso_energie_source_fr[,-c(7:12)]
-
-colnames(df_conso_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
-
-colonnes7 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
-df_conso_energie_source_fr_long <- df_conso_energie_source_fr%>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
-
-
-df_prod_energie_source_fr <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
-df_prod_energie_source_fr <- df_prod_energie_source_fr[,-c(7:12)]
-
-colnames(df_prod_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
-
-colonnes8 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
-
-df_prod_energie_source_fr_long <- df_prod_energie_source_fr %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>% 
-    filter(Annee %in% c(1980:2016))
-
-
+# df_CO2= read_tsv(file="~/données/Greenhouse Gas,  1850-2016 (in MtCO2eq).csv")
+# 
+# colnames(df_CO2)[1]<- 'Annee'
+# colnames(df_CO2)[4]<- 'Allemagne'
+# 
+# df_CO2_fr_all <- df_CO2[,-3]
+# colonnes2 <- c("France","Allemagne")
+# df_CO2_fr_all_long<- df_CO2_fr_all %>% pivot_longer(colonnes2, names_to = 'pays', values_to = "value")
+# 
+# save(df_CO2_fr_all, file="~/StageINSEE/data/Emissions_CO2_globales.rds")
+# 
+# 
+# #Emissions par secteurs
+# df_secteurs = read_tsv(file = "~/données/Emissions par secteurs Rapport Secten (en Mt).csv")
+# 
+# #On ne retient que les principaux secteurs émetteurs
+# df_secteurs <- df_secteurs[,-c(2:4)]
+# df_secteurs <- df_secteurs[,-5]
+# df_secteurs <- df_secteurs[,-6]
+# 
+# colnames(df_secteurs)[2] <- "Energie"
+# colnames(df_secteurs)[3] <- "Industrie manufacturière"
+# colnames(df_secteurs)[4] <- "Résidentiel et Tertiaire"
+# 
+# colonnes3 = c("Energie","Industrie manufacturière", "Résidentiel et Tertiaire", "Transports")
+# df_secteurs_long <- df_secteurs %>% pivot_longer(colonnes3, names_to = 'secteur', values_to = "value")
+# 
+# save(df_secteurs_long,file="~/StageINSEE/data/Emissions_CO2_secteurs.rds")
+# 
+# 
+# #Intensité carbone du PIB
+# df_intensite_PIB = read_csv(file='~/données/Emissions intensity of GDP data.csv')
+# 
+# df_intensite_PIB_past <- df_intensite_PIB[-c(83:90),]
+# df_intensite_PIB_past <- df_intensite_PIB_past[-28,]
+# #On retire les colonnes correspondant à des prévisions et la donnée supplémentaire pour l'UE (on prend la dernière pour simplifier)
+# 
+# df_intensite_PIB_past$year<- c(rep(seq(1990,2016),3))
+# 
+# #On supprime les colonnes inutiles et on renomme les colonnes restantes
+# 
+# df_intensite_PIB_past <- df_intensite_PIB_past[,-c(1:2)]
+# df_intensite_PIB_past <- df_intensite_PIB_past[,-2]
+# df_intensite_PIB_past <- df_intensite_PIB_past[,-3]
+# 
+# colnames(df_intensite_PIB_past)[1] <- 'pays'
+# colnames(df_intensite_PIB_past)[2] <- 'valeur'
+# colnames(df_intensite_PIB_past)[3] <- 'annee'
+# 
+# save(df_intensite_PIB_past,file="~/StageINSEE/data/intensite_carbone_PIB.rds")
+# 
+# 
+# #Intensité carbone de l'énergie
+# df_intensite_energie = read_csv(file='~/données/Emissions intensity of primary energy data.csv')
+# 
+# df_intensite_energie_past <- df_intensite_energie[-c(81:86),]
+# df_intensite_energie_past <- df_intensite_energie_past[-80,]
+# df_intensite_energie_past <- df_intensite_energie_past[-53,]
+# #On retire les colonnes correspondant à des prévisions et les données supplémentaires pour l'UE et l'Allemagne (on prend la dernière pour simplifier)
+# 
+# df_intensite_energie_past$year<- c(rep(seq(1990,2015),3))
+# 
+# #On supprime les colonnes inutiles et on renomme les colonnes restantes
+# 
+# df_intensite_energie_past <- df_intensite_energie_past[,-c(1:2)]
+# df_intensite_energie_past <- df_intensite_energie_past[,-2]
+# df_intensite_energie_past <- df_intensite_energie_past[,-3]
+# 
+# colnames(df_intensite_energie_past)[1] <- 'pays'
+# colnames(df_intensite_energie_past)[2] <- 'valeur'
+# colnames(df_intensite_energie_past)[3] <- 'annee'
+# 
+# save(df_intensite_energie_past,file="~/StageINSEE/data/intensite_carbone_energie.rds")
+# 
+# #Décomposition comptable des émissions de CO2
+# 
+# df_Kaya = read_tsv(file='~/données/KAYA identity, France, 1980-2015 (in base 100).csv')
+# 
+# colnames(df_Kaya)[2]<- 'Contenu CO2 energie'
+# colnames(df_Kaya)[3]<- 'Intensite_energetique_PIB'
+# colnames(df_Kaya)[4]<- 'PIB par tete'
+# 
+# save(df_Kaya,file="~/StageINSEE/data/donnees_Kaya.rds")
+# 
+# 
+# # ------ 2.Energie ----------------------
+# 
+# #Consommation et production par sources
+# 
+# df_conso_energie_source_fr <- read_tsv(file="~/données/Primary Energy Consumption by source, France, 1980-2016 (in Mtoe).csv")
+# df_conso_energie_source_fr <- df_conso_energie_source_fr[,-c(7:12)]
+# 
+# colnames(df_conso_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+# 
+# colonnes7 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+# df_conso_energie_source_fr_long <- df_conso_energie_source_fr%>% pivot_longer(colonnes7, names_to = 'source', values_to = "value")
+# 
+# save(df_conso_energie_source_fr_long, file="~/StageINSEE/data/conso_energie_sources_Fr.rds")
+# 
+# 
+# df_prod_energie_source_fr <- read_tsv(file = "~/données/Primary Energy Production by source, France, 1900-2016 (in Mtoe).csv")
+# df_prod_energie_source_fr <- df_prod_energie_source_fr[,-c(7:12)]
+# 
+# colnames(df_prod_energie_source_fr)<- c("Annee", "Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+# 
+# colonnes8 <- c("Pétrole","Charbon","Gaz","Nucléaire","Hydroélectricité")
+# 
+# df_prod_energie_source_fr_long <- df_prod_energie_source_fr %>% pivot_longer(colonnes8, names_to = 'source', values_to = "value")  %>%
+#     filter(Annee %in% c(1980:2016))
+# 
+# save(df_prod_energie_source_fr_long, file="~/StageINSEE/data/prod_sources_energie_France.rds")
+# 
 #Différence production-consommation des différentes sources d'énergie
 
-df_deseq_conso_prod <- df_conso_energie_source_fr_long %>% left_join(df_prod_energie_source_fr_long, by =c("Annee","source"), copy=FALSE)%>%
-    rename(consommation = value.x , production=value.y)%>%
-    mutate(desequilibre = consommation - production)%>%
-    filter(desequilibre != 0.0)
+# df_deseq_conso_prod <- df_conso_energie_source_fr_long %>% left_join(df_prod_energie_source_fr_long, by =c("Annee","source"), copy=FALSE)%>%
+#     rename(consommation = value.x , production=value.y)%>%
+#     mutate(desequilibre = consommation - production)%>%
+#     filter(desequilibre != 0.0)
+# 
+# save(df_deseq_conso_prod, file="~/StageINSEE/data/deseq_conso_prod.rds")
+
+# #Energie nucléaire
+
+# df_nucl =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
+# 
+# df_nucl <-df_nucl [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
+# df_nucl <- df_nucl %>% select(-'Unit')%>% select(-'Quantity Footnotes')
+# 
+# colnames(df_nucl)[1]<-"pays"
+# colnames(df_nucl)[2]<-"bien"
+# colnames(df_nucl)[3]<-"annee"
+# colnames(df_nucl)[4]<-"quantite_produite"
+# 
+# df_nucl<-df_nucl %>% select(-'bien')
+# 
+# save(df_nucl, file="~/StageINSEE/data/prod_nucleaire_Fr_All.rds")
+# 
+# 
+# #Energies renouvelables
+# 
+# #Données en valeur
+# 
+# df_conso_enr_fr =read.csv(file='~/données/Consommation_finale_energies_renouvelables_France.csv')
+# 
+# colnames(df_conso_enr_fr )[1] <- 'annee'
+# colnames(df_conso_enr_fr )[2] <- 'consommation_finale_energies_renouvelables_fr'
+# 
+# df_conso_enr_all = read.csv(file='~/données/conso_finale_energies_renouvelables_all.csv')
+# 
+# colnames(df_conso_enr_all)[1] <- 'annee'
+# colnames(df_conso_enr_all)[2] <- 'consommation_finale_energies_renouvelables_All'
+# 
+# df_conso_enr_fr_all <- df_conso_enr_fr %>% left_join(df_conso_enr_all, by ="annee", copy=FALSE)
+# 
+# colnames(df_conso_enr_fr_all)[2] <- 'France'
+# colnames(df_conso_enr_fr_all)[3] <- 'Allemagne'
+# 
+# col_2_bis <- c("France", "Allemagne")
+# df_conso_enr_fr_all_long <- df_conso_enr_fr_all %>% pivot_longer(col_2_bis, names_to = "consommation_finale_energies_renouvelables", values_to = "value")
+# 
+# save(df_conso_enr_fr_all_long, file= "~/StageINSEE/data/conso_enr_valeur.rds")
+# 
+# 
+# 
+# df_prod_enr =read.csv(file='~/données/Production_primaire_energies_renouvelables.csv')
+# 
+# colnames(df_prod_enr)[1] <- 'annee'
+# colnames(df_prod_enr)[2] <- 'France'
+# colnames(df_prod_enr)[4] <- 'Allemagne'
+# colnames(df_prod_enr)[3] <- 'UE'
+# 
+# colonnes_2<- c("France", "UE","Allemagne")
+# df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2, names_to = "production_primaire_energies_renouvelables", values_to = "value")
+# 
+# colonnes_2_bis<- c("France","Allemagne")
+# df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2_bis, names_to = "production_primaire_energies_renouvelables", values_to = "value")
+# df_prod_enr_long  <-select(df_prod_enr_long ,-UE)
+# 
+# save(df_prod_enr_long, file= "~/StageINSEE/data/prod_enr_valeur.rds")
+# 
+# 
+# #Données en proportion
+# 
+# df_part_enr_conso =  read_tsv(file='~/données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
+# df_part_enr_prod = read_tsv(file='~/données/Renewable_Energy_Production_share_of_primary_energy.csv')
+# 
+# df_part_enr_conso <- df_part_enr_conso[,-5]
+# df_part_enr_prod <- df_part_enr_prod[,-5]
+# 
+# colonnes_3<- c("France", "Allemagne","Italie","UE")
+# df_part_enr_conso_long <- df_part_enr_conso %>% pivot_longer(colonnes_3, names_to = "pays", values_to = "part_energies_renouvelables_conso_primaire")
+# 
+# colonnes_4<- c("France", "Allemagne","Italie","UE")
+# df_part_enr_prod_long <- df_part_enr_prod %>% pivot_longer(colonnes_4, names_to = "pays", values_to = "part_energies_renouvelables_prod_primaire")
+# 
+# save(df_part_enr_conso_long , file= "~/StageINSEE/data/conso_enr_prop.rds")
+# save(df_part_enr_prod_long , file= "~/StageINSEE/data/prod_enr_prop.rds")
+# 
+# 
+# # -------- 3.Investissements climat ----------------------
+# 
+# dfinv_2 = read_tsv(file='~/données/Investissements par secteur I4CE.csv')
+# 
+# colnames(dfinv_2)[2] <- 'Montant_financement_public_annuel_actuel'
+# colnames(dfinv_2)[3] <- 'Nouvel_objectif_annuel'
+# colnames(dfinv_2)[4] <- 'Investissement_supplementaire_annuel_genere_attendu'
+# 
+# dfinv_3 = read_tsv(file = '~/données/Investissements Plan I4CE.csv')
+# 
+# colnames(dfinv_3)[2] <- 'Investissements_historiques_2016_2018'
+# colnames(dfinv_3)[3] <- 'Investissements_court_terme'
+# colnames(dfinv_3)[4] <- 'Investissements_moyen_terme'
+# 
+# save(dfinv_2, file= "~/StageINSEE/data/Investissements_par_secteur_I4CE.rds")
+# 
+# 
+# # -------- 4.Finance verte -------------------------------
+# 
+# #Utilise les données du tableau précédent.
+# 
+# colnames(dfinv_3)[8] <- 'Financements_historiques'
+# colnames(dfinv_3)[9] <- 'Financements_court_terme'
+# colnames(dfinv_3)[10] <- 'Financements_moyen_terme'
+# 
+# save(dfinv_3 , file= "~/StageINSEE/data/Investissements_Plan_I4CE.rds")
 
 
-#Energie nucléaire
+###### Chargement des données traitées ################
 
-df_nucl =  read_csv(file='~/données/Prod_energie_nucleaire_France_Allemagne.csv')
-
-df_nucl <-df_nucl [-c(56:57),] #On supprime les deux dernières lignes qui n'apportent pas d'infos supplémentaires.
-df_nucl <- df_nucl %>% select(-'Unit')%>% select(-'Quantity Footnotes')
-
-colnames(df_nucl)[1]<-"pays"
-colnames(df_nucl)[2]<-"bien"
-colnames(df_nucl)[3]<-"annee"
-colnames(df_nucl)[4]<-"quantite_produite"
-
-df_nucl<-df_nucl %>% select(-'bien') 
-
-
-#Energies renouvelables
-
-#Données en valeur
-
-df_conso_enr_fr =read.csv(file='~/données/Consommation_finale_energies_renouvelables_France.csv')
-
-colnames(df_conso_enr_fr )[1] <- 'annee'
-colnames(df_conso_enr_fr )[2] <- 'consommation_finale_energies_renouvelables_fr'
-
-df_conso_enr_all = read.csv(file='~/données/conso_finale_energies_renouvelables_all.csv')
-
-colnames(df_conso_enr_all)[1] <- 'annee'
-colnames(df_conso_enr_all)[2] <- 'consommation_finale_energies_renouvelables_All'
-
-df_conso_enr_fr_all <- df_conso_enr_fr %>% left_join(df_conso_enr_all, by ="annee", copy=FALSE) 
-
-colnames(df_conso_enr_fr_all)[2] <- 'France'
-colnames(df_conso_enr_fr_all)[3] <- 'Allemagne'
-
-col_2_bis <- c("France", "Allemagne")
-df_conso_enr_fr_all_long <- df_conso_enr_fr_all %>% pivot_longer(col_2_bis, names_to = "consommation_finale_energies_renouvelables", values_to = "value")
-
-
-df_prod_enr =read.csv(file='~/données/Production_primaire_energies_renouvelables.csv')
-
-colnames(df_prod_enr)[1] <- 'annee'
-colnames(df_prod_enr)[2] <- 'France'
-colnames(df_prod_enr)[4] <- 'Allemagne'
-colnames(df_prod_enr)[3] <- 'UE' 
-
-colonnes_2<- c("France", "UE","Allemagne") 
-df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
-
-colonnes_2_bis<- c("France","Allemagne") 
-df_prod_enr_long <- df_prod_enr %>% pivot_longer(colonnes_2_bis, names_to = "production_primaire_energies_renouvelables", values_to = "value") 
-df_prod_enr_long  <-select(df_prod_enr_long ,-UE)
-
-
-#Données en proportion
-
-df_part_enr_conso =  read_tsv(file='~/données/Renewable_Energy_Consumption_share_of_primary_energy.csv')
-df_part_enr_prod = read_tsv(file='~/données/Renewable_Energy_Production_share_of_primary_energy.csv')
-
-df_part_enr_conso <- df_part_enr_conso[,-5]
-df_part_enr_prod <- df_part_enr_prod[,-5]
-
-colonnes_3<- c("France", "Allemagne","Italie","UE") 
-df_part_enr_conso_long <- df_part_enr_conso %>% pivot_longer(colonnes_3, names_to = "pays", values_to = "part_energies_renouvelables_conso_primaire") 
-
-colonnes_4<- c("France", "Allemagne","Italie","UE") 
-df_part_enr_prod_long <- df_part_enr_prod %>% pivot_longer(colonnes_4, names_to = "pays", values_to = "part_energies_renouvelables_prod_primaire") 
-
-
-# -------- 3.Investissements climat ----------------------
-
-dfinv_2 = read_tsv(file='~/données/Investissements par secteur I4CE.csv')
-
-colnames(dfinv_2)[2] <- 'Montant_financement_public_annuel_actuel'
-colnames(dfinv_2)[3] <- 'Nouvel_objectif_annuel'
-colnames(dfinv_2)[4] <- 'Investissement_supplementaire_annuel_genere_attendu'
-
-dfinv_3 = read_tsv(file = '~/données/Investissements Plan I4CE.csv')
-
-colnames(dfinv_3)[2] <- 'Investissements_historiques_2016_2018'
-colnames(dfinv_3)[3] <- 'Investissements_court_terme'
-colnames(dfinv_3)[4] <- 'Investissements_moyen_terme'
-
-
-
-# -------- 4.Finance verte -------------------------------
-
-#Utilise les données du tableau précédent.
-
-colnames(dfinv_3)[8] <- 'Financements_historiques'
-colnames(dfinv_3)[9] <- 'Financements_court_terme'
-colnames(dfinv_3)[10] <- 'Financements_moyen_terme'
-
+load(file="~/StageINSEE/data/conso_enr_prop.rds")
+load(file="~/StageINSEE/data/conso_enr_valeur.rds")
+load(file="~/StageINSEE/data/prod_enr_prop.rds")
+load(file="~/StageINSEE/data/prod_enr_valeur.rds")
+load(file = "~/StageINSEE/data/donnees_Kaya.rds")
+load(file="~/StageINSEE/data/Emissions_CO2_globales.rds")
+load(file="~/StageINSEE/data/Emissions_CO2_secteurs.rds")
+load(file="~/StageINSEE/data/intensite_carbone_energie.rds")
+load(file="~/StageINSEE/data/intensite_carbone_PIB.rds")
+load(file="~/StageINSEE/data/Investissements_par_secteur_I4CE.rds")
+load(file="~/StageINSEE/data/Investissements_Plan_I4CE.rds")
+load(file="~/StageINSEE/data/part_ER_conso.rds")
+load(file="~/StageINSEE/data/part_ER_prod.rds")
+load(file="~/StageINSEE/data/conso_energie_sources_Fr.rds")
+load(file="~/StageINSEE/data/prod_nucleaire_Fr_All.rds")
+load(file="~/StageINSEE/data/prod_sources_energie_France.rds")
+load(file="~/StageINSEE/data/prod_totale_energie.rds")
+load(file="~/StageINSEE/data/deseq_conso_prod.rds")
 
 
 
@@ -347,7 +394,7 @@ ui <-  dashboardPage(
                 box(
                     width = 4,
                     selectInput("secteur", "Secteur choisi", 
-                                choices = c("Tous les secteurs", unique(dfshiny5$secteur)))
+                                choices = c("Tous les secteurs", unique(df_secteurs_long$secteur)))
                 ),
                 
                 
@@ -369,7 +416,7 @@ ui <-  dashboardPage(
                 box(
                     width = 4,
                     selectInput("source", "Source d'énergie choisie", 
-                                choices = c("Toutes", unique(dfshiny7$source)))
+                                choices = c("Toutes", unique(df_prod_energie_source_fr_long$source)))
                 ),
     
                 
@@ -740,14 +787,13 @@ server <- function(input, output) {
     
     #Figure sur la répartition des émissions par secteurs
     
-    dfshiny5 <- df_secteurs_long
-    
+  
     output$emissions_secteurs <- renderPlotly({
         
         if(input$secteur == "Tous les secteurs"){
-            data = dfshiny5
+            data = df_secteurs_long
         } else {
-            data = dfshiny5 %>%
+            data = df_secteurs_long %>%
                 filter(secteur== input$secteur)%>%
                 group_by(Annee)
         }
@@ -769,7 +815,7 @@ server <- function(input, output) {
     
     dfshiny6<- df_conso_energie_source_fr_long 
     
-    dfshiny7<- df_prod_energie_source_fr_long
+
     
     #Consommation
     
@@ -802,11 +848,11 @@ server <- function(input, output) {
     
     donnees_sources_energie_prod <- reactive( {
         if (input$source == "Toutes") {
-            data_prod = dfshiny7 
+            data_prod = df_prod_energie_source_fr_long 
             
         } else {
             
-            data_prod = dfshiny7 %>%
+            data_prod = df_prod_energie_source_fr_long %>%
                 filter(source == input$source) %>%
                 group_by(Annee)
             
