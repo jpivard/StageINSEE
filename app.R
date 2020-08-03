@@ -1,13 +1,18 @@
-#####Chargement des packages #################
 
-library(shiny)
-library(highcharter)
-library(dplyr)
-library(tidyr)
-library(readr)
-library(plotly)
-library(shinydashboard)
-library(rsconnect)
+#####Installation des packages(faite dans le fichier "dependencies")#######
+
+source('dependencies.R')
+
+# #####Chargement des packages #################
+# 
+# library(shiny)
+# library(highcharter)
+# library(dplyr)
+# library(tidyr)
+# library(readr)
+# library(plotly)
+# library(shinydashboard)
+# library(rsconnect)
 
 
 
