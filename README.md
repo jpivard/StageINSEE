@@ -1,6 +1,6 @@
 # StageINSEE
 
-Ce dépôt contient le fichier "app.r" (dans le dossier "Dashboard complet"), accompagné des bases de données que j'ai manipulées (regroupées dans le dossier data), permettant d'exécuter l'application R Shiny réalisée dans le cadre d'un stage à l'INSEE portant sur un modèle macroéconomique sur le financement de la transition écologique. 
+Ce dépôt contient le fichier "app.r" accompagné des bases de données que j'ai manipulées (regroupées dans le dossier data), permettant d'exécuter l'application R Shiny réalisée dans le cadre d'un stage à l'INSEE portant sur un modèle macroéconomique sur le financement de la transition écologique. 
 
 Il contient aussi d'autres fichiers moins utiles pour les utilisateurs, qui retracent les différentes étapes de sa conception ou fournissent simplement des exemples de fonctionnalités proposées par Shiny desquelles je me suis inspiré.
 
