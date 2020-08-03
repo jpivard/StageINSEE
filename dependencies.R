@@ -1,9 +1,9 @@
 
-# LIST OF REQUIRED PACKAGES -----------------------------------------------
+# Liste des packages requis -----------------------------------------------
 
 PACKAGES <- c("ggplot2","tidyr","dplyr","shiny","shinydashboard","highcharter","plotly","readr","rsconnect")
 
-#  Install packages
+#  Installation des packages
 
 inst <- match(PACKAGES, .packages(all=TRUE))
 need <- which(is.na(inst))
