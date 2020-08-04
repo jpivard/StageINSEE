@@ -2,8 +2,7 @@
 
 Ce dépôt contient le fichier "app.r" accompagné des bases de données que j'ai manipulées (regroupées dans le dossier data), permettant d'exécuter l'application R Shiny réalisée dans le cadre d'un stage à l'INSEE portant sur un modèle macroéconomique sur le financement de la transition écologique. 
 
-ASTUCE : Pour lancer l'application depuis R Studio, pas besoin de clôner le dépôt, il suffit d'exécuter la commande suivante dans votre console :
-runGitHub( "StageINSEE", "jpivard")
+L'application est disponible en ligne à ce lien : https://jeromepivard.shinyapps.io/stageinsee/
 
 Pour une vision d'ensemble sur le travail que j'ai effectué, l'application est à utiliser en complément de la lecture d'un rapport disponible en pdf dans ce dépôt. 
 
