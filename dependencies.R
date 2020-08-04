@@ -1,9 +1,7 @@
 
 # Liste des packages requis -----------------------------------------------
 
-PACKAGES <- c("ggplot2","tidyr","devtools","shiny","shinydashboard","highcharter","plotly","readr","rsconnect")
-
-devtools::install_github("tidyverse/dplyr")
+PACKAGES <- c("ggplot2","tidyr","dplyr","shiny","shinydashboard","highcharter","plotly","readr","rsconnect")
 
 #  Installation des packages
 

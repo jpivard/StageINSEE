@@ -1,0 +1,10 @@
+name: stageinsee
+title:
+username:
+account: jeromepivard
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2639726
+bundleId: 3472613
+url: https://jeromepivard.shinyapps.io/stageinsee/
+when: 1596531292.34519
