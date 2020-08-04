@@ -4,16 +4,17 @@
 source('dependencies.R')
 
 # #####Chargement des packages #################
-# 
-# library(shiny)
-# library(highcharter)
-# library(dplyr)
-# library(tidyr)
-# library(readr)
-# library(plotly)
-# library(shinydashboard)
-# library(rsconnect)
 
+library(ggplot2)
+library(shiny)
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(plotly)
+library(shinydashboard)
+library(rsconnect)
+library(highcharter)
 
 
 
@@ -308,7 +309,7 @@ ui <-  dashboardPage(
                      ),
             menuItem("Sources des données et autres informations",  icon = icon("database"), href= "https://github.com/jpivard/StageINSEE/blob/master/Sources%20et%20autres%20informations.md"),
             menuItem("Les ingrédients de cette appli", icon = icon("github"), href = "https://github.com/jpivard/StageINSEE"),
-            menuItem("Le rapport associé", icon = icon("leaf"), href = "https://www.overleaf.com/project/5ef222dfa6646d0001488302")
+            menuItem("Le rapport associé", icon = icon("leaf"), href = "https://github.com/jpivard/StageINSEE/blob/master/Rapport.pdf")
         )
     ),
     
